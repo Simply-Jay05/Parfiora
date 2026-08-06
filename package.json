@@ -1,6 +1,6 @@
 {
   "name": "parfiora",
-  "main": "expo-router/entry",
+  "main": "expo/AppEntry",
   "version": "1.0.0",
   "dependencies": {
     "@dicebear/core": "^10.4.0",
@@ -18,7 +18,6 @@
     "expo-glass-effect": "~57.0.1",
     "expo-image": "~57.0.2",
     "expo-linking": "~57.0.5",
-    "expo-router": "~57.0.11",
     "expo-splash-screen": "~57.0.5",
     "expo-status-bar": "~57.0.1",
     "expo-symbols": "~57.0.2",
