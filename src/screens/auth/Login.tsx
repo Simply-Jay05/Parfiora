@@ -1,6 +1,10 @@
+import AuthHeader from "@/components/auth/AuthHeader";
+import AppCheckbox from "@/components/ui/AppCheckbox";
+import BackButton from "@/components/ui/BackButton";
+import PasswordField from "@/components/ui/PasswordField";
+import TextField from "@/components/ui/TextField";
 import { COLORS } from "@/utils/colors";
 import { MaterialIcons } from "@expo/vector-icons";
-import Checkbox from "expo-checkbox";
 import { useState } from "react";
 import {
   Keyboard,
@@ -9,13 +13,13 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Button from "../../components/ui/Button";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -36,72 +40,46 @@ export default function Login() {
           >
             <View style={styles.content}>
               {/* Back Button */}
-              <TouchableOpacity style={styles.backBtn}>
-                <MaterialIcons
-                  name="keyboard-backspace"
-                  size={22}
-                  color="black"
-                />
-              </TouchableOpacity>
+              <BackButton />
               {/* Header */}
-              <View style={styles.header}>
-                <Text style={styles.headerH1}>Welcome back</Text>
-                <Text style={styles.text}>
-                  Please enter your credentials to sign in.
-                </Text>
-              </View>
-
+              <AuthHeader
+                title="Welcome Back"
+                subtitle="Please enter your details to sign in."
+              />
               {/* Form */}
               <View style={styles.form}>
-                <View style={styles.formField}>
-                  <Text style={styles.formLabel}>Email</Text>
-                  <View style={styles.formInput}>
+                <TextField
+                  label="Email"
+                  icon={
                     <MaterialIcons
                       name="email"
                       size={18}
                       color={COLORS.secondaryColor}
                     />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your email"
-                      keyboardType="email-address"
-                      onChangeText={(text) => setEmail(text)}
-                    />
-                  </View>
-                </View>
-                <View style={styles.formField}>
-                  <Text style={styles.formLabel}>Password</Text>
-                  <View style={styles.formInput}>
-                    <MaterialIcons
-                      name="lock"
-                      size={18}
-                      color={COLORS.secondaryColor}
-                    />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your password"
-                      onChangeText={(text) => setPassword(text)}
-                      secureTextEntry
-                    />
-                  </View>
-                </View>
+                  }
+                  placeholder="Enter your email"
+                  value={email}
+                  onChangeText={setEmail}
+                />
+                <PasswordField
+                  label="Password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                {/* Checkbox View */}
                 <View style={styles.checkContainer}>
-                  {/* Checkbox View */}
-                  <View style={styles.checkView}>
-                    <Checkbox
-                      value={remember}
-                      onValueChange={setRemember}
-                      color={remember ? COLORS.secondaryColor : undefined}
-                    />
-                    <Text style={styles.checkText}>Remember me</Text>
-                  </View>
+                  <AppCheckbox
+                    label="Remember me"
+                    value={remember}
+                    onValueChange={setRemember}
+                  />
                   {/* Forgot Password Link */}
                   <TouchableOpacity>
-                    <Text style={styles.link}>Forgot Password?</Text>
+                    <Text style={styles.link}>Forgot password?</Text>
                   </TouchableOpacity>
                 </View>
               </View>
-
               {/* Sign up Link */}
               <View style={styles.linkView}>
                 <Text style={styles.text}>Don't have an account?</Text>
@@ -111,12 +89,8 @@ export default function Login() {
               </View>
             </View>
 
-            {/* Signup Button */}
-            <View>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Sign In</Text>
-              </TouchableOpacity>
-            </View>
+            {/* Login Button */}
+            <Button title="Sign In" style={styles.button} />
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

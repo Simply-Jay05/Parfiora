@@ -1,7 +1,7 @@
+import Login from "@/screens/auth/login";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import Signup from "./src/screens/auth/signup";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,7 +24,7 @@ export default function App() {
     return null;
   }
   return (
-    // <Login />
-    <Signup />
+    <Login />
+    // <Signup />
   );
 }

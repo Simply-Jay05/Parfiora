@@ -1,6 +1,8 @@
+import AuthHeader from "@/components/auth/AuthHeader";
+import AppCheckbox from "@/components/ui/AppCheckbox";
+import BackButton from "@/components/ui/BackButton";
 import { COLORS } from "@/utils/colors";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import Checkbox from "expo-checkbox";
 import { useState } from "react";
 import {
   Keyboard,
@@ -9,13 +11,15 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Button from "../../components/ui/Button";
+import PasswordField from "../../components/ui/PasswordField";
+import TextField from "../../components/ui/TextField";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -38,119 +42,76 @@ export default function Signup() {
           >
             <View style={styles.content}>
               {/* Back Button */}
-              <TouchableOpacity style={styles.backBtn}>
-                <MaterialIcons
-                  name="keyboard-backspace"
-                  size={22}
-                  color="black"
-                />
-              </TouchableOpacity>
+              <BackButton />
               {/* Header */}
-              <View style={styles.header}>
-                <Text style={styles.headerH1}>Create Account</Text>
-                <Text style={styles.text}>
-                  Sign up to unlock the world of Parfait.
-                </Text>
-              </View>
-
+              <AuthHeader
+                title="Create Account"
+                subtitle="Sign up to unlock the world of Parfait."
+              />
               {/* Form */}
               <View style={styles.form}>
-                <View style={styles.formField}>
-                  <Text style={styles.formLabel}>Full Name</Text>
-                  <View style={styles.formInput}>
+                <TextField
+                  label="Full Name"
+                  icon={
                     <FontAwesome
                       name="user"
                       size={18}
                       color={COLORS.secondaryColor}
                     />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your full name"
-                      keyboardType="default"
-                      onChangeText={(text) => setName(text)}
-                    />
-                  </View>
-                </View>
-                <View style={styles.formField}>
-                  <Text style={styles.formLabel}>Email</Text>
-                  <View style={styles.formInput}>
+                  }
+                  placeholder="Enter your full name"
+                  value={name}
+                  onChangeText={setName}
+                />
+                <TextField
+                  label="Email"
+                  icon={
                     <MaterialIcons
                       name="email"
                       size={18}
                       color={COLORS.secondaryColor}
                     />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your email"
-                      keyboardType="email-address"
-                      onChangeText={(text) => setEmail(text)}
-                    />
-                  </View>
-                </View>
-                <View style={styles.formField}>
-                  <Text style={styles.formLabel}>Password</Text>
-                  <View style={styles.formInput}>
-                    <MaterialIcons
-                      name="lock"
-                      size={18}
-                      color={COLORS.secondaryColor}
-                    />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your password"
-                      onChangeText={(text) => setPassword(text)}
-                      secureTextEntry
-                    />
-                  </View>
-                </View>
-                <View style={styles.formField}>
-                  <Text style={styles.formLabel}>Confirm Password</Text>
-                  <View style={styles.formInput}>
-                    <MaterialIcons
-                      name="lock"
-                      size={18}
-                      color={COLORS.secondaryColor}
-                    />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Confirm your password"
-                      onChangeText={(text) => setPasswordConfirmation(text)}
-                      secureTextEntry
-                    />
-                  </View>
-                </View>
+                  }
+                  placeholder="Enter your email"
+                  value={email}
+                  onChangeText={setEmail}
+                />
+                <PasswordField
+                  label="Password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <PasswordField
+                  label="Confirm Password"
+                  placeholder="Confirm your password"
+                  value={passwordConfirmation}
+                  onChangeText={setPasswordConfirmation}
+                />
+                {/* Checkbox View */}
                 <View style={styles.checkContainer}>
-                  {/* Checkbox View */}
-                  <View style={styles.checkView}>
-                    <Checkbox
-                      value={remember}
-                      onValueChange={setRemember}
-                      color={remember ? COLORS.secondaryColor : undefined}
-                    />
-                    <Text style={styles.checkText}>Remember me</Text>
-                  </View>
+                  <AppCheckbox
+                    label="Remember me"
+                    value={remember}
+                    onValueChange={setRemember}
+                  />
                   {/* Forgot Password Link */}
                   <TouchableOpacity>
-                    <Text style={styles.link}>Forgot Password?</Text>
+                    <Text style={styles.link}>Forgot password?</Text>
                   </TouchableOpacity>
                 </View>
               </View>
-
               {/* Sign up Link */}
               <View style={styles.linkView}>
-                <Text style={styles.text}>Don't have an account?</Text>
+                <Text style={styles.text}>Already have an account?</Text>
                 <TouchableOpacity>
-                  <Text style={styles.link}>Sign up</Text>
+                  <Text style={styles.link}>Sign In</Text>
                 </TouchableOpacity>
               </View>
             </View>
 
             {/* Signup Button */}
-            <View>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Sign In</Text>
-              </TouchableOpacity>
-            </View>
+            <Button title="Sign Up" style={styles.button} />
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -171,14 +132,6 @@ const styles = StyleSheet.create({
   content: {
     gap: wp("10%"),
   },
-  header: {
-    gap: wp("4%"),
-  },
-  headerH1: {
-    fontFamily: "BricolageGrotesque-Bold",
-    fontSize: 25,
-    color: COLORS.textColor,
-  },
   text: {
     fontFamily: "Manrope-Regular",
     fontSize: 16,
@@ -186,45 +139,10 @@ const styles = StyleSheet.create({
   form: {
     gap: wp("5%"),
   },
-  formField: {
-    gap: wp("1%"),
-  },
-  formLabel: {
-    fontFamily: "Manrope-Regular",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  formInput: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: wp("4%"),
-    backgroundColor: COLORS.bgColor,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.primaryColor,
-    gap: wp("2%"),
-  },
-  input: {
-    flex: 1,
-    paddingVertical: wp("4%"),
-    color: COLORS.textColor,
-    fontSize: 15,
-  },
   checkContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  checkView: {
-    flexDirection: "row",
-    gap: wp("2%"),
-    alignItems: "center",
-  },
-  check: {},
-  checkText: {
-    fontFamily: "Manrope-Regular",
-    fontSize: 16,
-    fontWeight: "semibold",
   },
   link: {
     fontFamily: "Manrope-Regular",
@@ -239,24 +157,5 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: wp("4%"),
-    backgroundColor: COLORS.secondaryColor,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonText: {
-    fontFamily: "Manrope-Regular",
-    fontSize: 16,
-    color: "white",
-    fontWeight: "bold",
-  },
-  backBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: COLORS.bgColor,
   },
 });
