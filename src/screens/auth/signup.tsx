@@ -1,5 +1,5 @@
 import { COLORS } from "@/utils/colors";
-import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { useState } from "react";
 import {
@@ -17,9 +17,11 @@ import {
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function Login() {
+export default function Signup() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [remember, setRemember] = useState(false);
 
   return (
@@ -45,14 +47,30 @@ export default function Login() {
               </TouchableOpacity>
               {/* Header */}
               <View style={styles.header}>
-                <Text style={styles.headerH1}>Welcome back</Text>
+                <Text style={styles.headerH1}>Create Account</Text>
                 <Text style={styles.text}>
-                  Please enter your credentials to sign in.
+                  Sign up to unlock the world of Parfait.
                 </Text>
               </View>
 
               {/* Form */}
               <View style={styles.form}>
+                <View style={styles.formField}>
+                  <Text style={styles.formLabel}>Full Name</Text>
+                  <View style={styles.formInput}>
+                    <FontAwesome
+                      name="user"
+                      size={18}
+                      color={COLORS.secondaryColor}
+                    />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Enter your full name"
+                      keyboardType="default"
+                      onChangeText={(text) => setName(text)}
+                    />
+                  </View>
+                </View>
                 <View style={styles.formField}>
                   <Text style={styles.formLabel}>Email</Text>
                   <View style={styles.formInput}>
@@ -81,6 +99,22 @@ export default function Login() {
                       style={styles.input}
                       placeholder="Enter your password"
                       onChangeText={(text) => setPassword(text)}
+                      secureTextEntry
+                    />
+                  </View>
+                </View>
+                <View style={styles.formField}>
+                  <Text style={styles.formLabel}>Confirm Password</Text>
+                  <View style={styles.formInput}>
+                    <MaterialIcons
+                      name="lock"
+                      size={18}
+                      color={COLORS.secondaryColor}
+                    />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Confirm your password"
+                      onChangeText={(text) => setPasswordConfirmation(text)}
                       secureTextEntry
                     />
                   </View>
@@ -132,6 +166,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flexGrow: 1,
     justifyContent: "space-between",
+    gap: wp("2%"),
   },
   content: {
     gap: wp("10%"),
