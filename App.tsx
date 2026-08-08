@@ -1,4 +1,4 @@
-import Login from "@/screens/auth/login";
+import Splash from "@/screens/auth/splash";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -24,7 +24,9 @@ export default function App() {
     return null;
   }
   return (
-    <Login />
+    <Splash />
+    // <Welcome />
+    // <Login />
     // <Signup />
   );
 }
