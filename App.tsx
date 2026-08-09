@@ -1,8 +1,7 @@
-import Splash from "@/screens/auth/splash";
+import Otp from "@/screens/auth/otp";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
@@ -24,7 +23,9 @@ export default function App() {
     return null;
   }
   return (
-    <Splash />
+    <Otp />
+    // <ForgotPassword />
+    // <Splash />
     // <Welcome />
     // <Login />
     // <Signup />

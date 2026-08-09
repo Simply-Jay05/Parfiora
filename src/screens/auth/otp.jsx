@@ -1,22 +1,22 @@
 import AuthHeader from "@/components/auth/AuthHeader";
 import BackButton from "@/components/ui/BackButton";
 import Button from "@/components/ui/Button";
-import TextField from "@/components/ui/TextField";
+import OTPInput from "@/components/ui/OTPInput";
 import { COLORS } from "@/utils/colors";
-import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
+  Text,
   View,
 } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function ForgotPassword() {
-  const [email, setEmail] = useState("");
+export default function Otp() {
+  const [otp, setOtp] = useState("");
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -31,23 +31,21 @@ export default function ForgotPassword() {
             <View>
               <BackButton />
             </View>
-            <AuthHeader
-              title="Reset your password"
-              subtitle="Please enter your email and will send an OTP code in the next step to reset your password"
-            />
-            <TextField
-              label="Email"
-              icon={
-                <MaterialIcons
-                  name="email"
-                  size={18}
-                  color={COLORS.secondaryColor}
-                />
-              }
-              placeholder="Enter your email"
-              value={email}
-              onChangeText={setEmail}
-            />
+            <View>
+              <AuthHeader
+                title="OTP code verification"
+                subtitle="We have sent an OTP code to email and *****deo@gmail.com. Enter the OTP code below to verify."
+              />
+            </View>
+            <View>
+              <OTPInput length={4} value={otp} onChange={setOtp} />
+            </View>
+            <View style={styles.footertext}>
+              <Text style={styles.text}>Didn't receive email?</Text>
+              <Text style={styles.text}>
+                You can resend code in <Text style={styles.timer}>52</Text> s
+              </Text>
+            </View>
           </View>
           <View>
             <Button title="Continue" style={styles.button} />
@@ -74,4 +72,14 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: wp("4%"),
   },
+  footertext: {
+    alignItems: "center",
+    gap: wp("2%"),
+  },
+  text: {
+    fontFamily: "Manrope-Regular",
+    fontSize: 16,
+  },
+  resendText: {},
+  timer: { color: COLORS.secondaryColor },
 });
