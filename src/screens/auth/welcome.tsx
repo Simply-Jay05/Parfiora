@@ -27,17 +27,17 @@ export default function Welcome() {
 
           <TouchableOpacity style={styles.socialBtn}>
             <AppleLogo width={24} height={24} />
-            <Text style={styles.text}>Continue with Google</Text>
+            <Text style={styles.text}>Continue with Apple</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.socialBtn}>
             <FacebookLogo width={24} height={24} />
-            <Text style={styles.text}>Continue with Google</Text>
+            <Text style={styles.text}>Continue with Facebook</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.socialBtn}>
             <XLogo width={24} height={24} />
-            <Text style={styles.text}>Continue with Google</Text>
+            <Text style={styles.text}>Continue with X</Text>
           </TouchableOpacity>
         </View>
         <View>
@@ -46,7 +46,7 @@ export default function Welcome() {
           </TouchableOpacity>
         </View>
         <View style={styles.footer}>
-          <Text style={styles.text}>Don't have an accoun?</Text>
+          <Text style={styles.text}>Don't have an account?</Text>
           <TouchableOpacity>
             <Text style={styles.footerLink}>Sign up</Text>
           </TouchableOpacity>

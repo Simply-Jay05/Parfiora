@@ -101,17 +101,18 @@ export default function Signup() {
                   </TouchableOpacity>
                 </View>
               </View>
-              {/* Sign up Link */}
-              <View style={styles.linkView}>
-                <Text style={styles.text}>Already have an account?</Text>
-                <TouchableOpacity>
-                  <Text style={styles.link}>Sign In</Text>
-                </TouchableOpacity>
+              <View style={styles.footerView}>
+                {/* Signup Button */}
+                <Button title="Sign Up" />
+                {/* Sign up Link */}
+                <View style={styles.linkView}>
+                  <Text style={styles.text}>Already have an account?</Text>
+                  <TouchableOpacity>
+                    <Text style={styles.link}>Sign In</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-
-            {/* Signup Button */}
-            <Button title="Sign Up" style={styles.button} />
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: wp("1%"),
   },
-  button: {
-    marginBottom: wp("4%"),
+  footerView: {
+    gap: wp("2%"),
   },
 });

@@ -80,17 +80,18 @@ export default function Login() {
                   </TouchableOpacity>
                 </View>
               </View>
-              {/* Sign up Link */}
-              <View style={styles.linkView}>
-                <Text style={styles.text}>Don't have an account?</Text>
-                <TouchableOpacity>
-                  <Text style={styles.link}>Sign up</Text>
-                </TouchableOpacity>
+              <View style={styles.footerView}>
+                {/* Signup Button */}
+                <Button title="Sign Up" />
+                {/* Sign up Link */}
+                <View style={styles.linkView}>
+                  <Text style={styles.text}>Already have an account?</Text>
+                  <TouchableOpacity>
+                    <Text style={styles.link}>Sign In</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-
-            {/* Login Button */}
-            <Button title="Sign In" style={styles.button} />
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -105,10 +106,9 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexGrow: 1,
-    justifyContent: "space-between",
   },
   content: {
-    gap: wp("10%"),
+    gap: wp("11%"),
   },
   header: {
     gap: wp("4%"),
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     gap: wp("1%"),
   },
   button: {
-    marginBottom: wp("4%"),
+    // marginBottom: wp("4%"),
     backgroundColor: COLORS.secondaryColor,
     height: 56,
     borderRadius: 28,
@@ -197,5 +197,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: COLORS.bgColor,
+  },
+  footerView: {
+    gap: wp("2%"),
   },
 });
