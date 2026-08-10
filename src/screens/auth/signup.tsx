@@ -1,8 +1,10 @@
 import AuthHeader from "@/components/auth/AuthHeader";
 import AppCheckbox from "@/components/ui/AppCheckbox";
 import BackButton from "@/components/ui/BackButton";
+import { AuthNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import {
   Keyboard,
@@ -21,12 +23,16 @@ import Button from "../../components/ui/Button";
 import PasswordField from "../../components/ui/PasswordField";
 import TextField from "../../components/ui/TextField";
 
+type SignupType = NavigationProp<AuthNav, "Signup">;
+
 export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [remember, setRemember] = useState(false);
+
+  const navigation = useNavigation<SignupType>();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -108,7 +114,12 @@ export default function Signup() {
                 <View style={styles.linkView}>
                   <Text style={styles.text}>Already have an account?</Text>
                   <TouchableOpacity>
-                    <Text style={styles.link}>Sign In</Text>
+                    <Text
+                      style={styles.link}
+                      onPress={() => navigation.navigate("Login")}
+                    >
+                      Sign In
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>

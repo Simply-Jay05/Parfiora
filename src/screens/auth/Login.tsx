@@ -3,8 +3,10 @@ import AppCheckbox from "@/components/ui/AppCheckbox";
 import BackButton from "@/components/ui/BackButton";
 import PasswordField from "@/components/ui/PasswordField";
 import TextField from "@/components/ui/TextField";
+import { AuthNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { MaterialIcons } from "@expo/vector-icons";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import {
   Keyboard,
@@ -21,10 +23,14 @@ import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../components/ui/Button";
 
+type LoginType = NavigationProp<AuthNav, "Login">;
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+
+  const navigation = useNavigation<LoginType>();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -87,7 +93,12 @@ export default function Login() {
                 <View style={styles.linkView}>
                   <Text style={styles.text}>Already have an account?</Text>
                   <TouchableOpacity>
-                    <Text style={styles.link}>Sign In</Text>
+                    <Text
+                      style={styles.link}
+                      onPress={() => navigation.navigate("Signup")}
+                    >
+                      Sign In
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -110,14 +121,6 @@ const styles = StyleSheet.create({
   content: {
     gap: wp("11%"),
   },
-  header: {
-    gap: wp("4%"),
-  },
-  headerH1: {
-    fontFamily: "BricolageGrotesque-Bold",
-    fontSize: 25,
-    color: COLORS.textColor,
-  },
   text: {
     fontFamily: "Manrope-Regular",
     fontSize: 16,
@@ -125,45 +128,10 @@ const styles = StyleSheet.create({
   form: {
     gap: wp("5%"),
   },
-  formField: {
-    gap: wp("1%"),
-  },
-  formLabel: {
-    fontFamily: "Manrope-Regular",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  formInput: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: wp("4%"),
-    backgroundColor: COLORS.bgColor,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.primaryColor,
-    gap: wp("2%"),
-  },
-  input: {
-    flex: 1,
-    paddingVertical: wp("4%"),
-    color: COLORS.textColor,
-    fontSize: 15,
-  },
   checkContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  checkView: {
-    flexDirection: "row",
-    gap: wp("2%"),
-    alignItems: "center",
-  },
-  check: {},
-  checkText: {
-    fontFamily: "Manrope-Regular",
-    fontSize: 16,
-    fontWeight: "semibold",
   },
   link: {
     fontFamily: "Manrope-Regular",
@@ -175,28 +143,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     gap: wp("1%"),
-  },
-  button: {
-    // marginBottom: wp("4%"),
-    backgroundColor: COLORS.secondaryColor,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonText: {
-    fontFamily: "Manrope-Regular",
-    fontSize: 16,
-    color: "white",
-    fontWeight: "bold",
-  },
-  backBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: COLORS.bgColor,
   },
   footerView: {
     gap: wp("2%"),

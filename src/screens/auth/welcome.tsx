@@ -1,4 +1,6 @@
+import { AuthNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,7 +9,10 @@ import FacebookLogo from "../../../assets/icons/facebook.svg";
 import GoogleLogo from "../../../assets/icons/google.svg";
 import XLogo from "../../../assets/icons/x.svg";
 
+type WelcomeType = NavigationProp<AuthNav, "Welcome">;
+
 export default function Welcome() {
+  const navigation = useNavigation<WelcomeType>();
   return (
     <SafeAreaView style={styles.continer}>
       <View style={styles.content}>
@@ -41,14 +46,22 @@ export default function Welcome() {
           </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity style={styles.signInBtn}>
+          <TouchableOpacity
+            style={styles.signInBtn}
+            onPress={() => navigation.navigate("Login")}
+          >
             <Text style={styles.signInText}>Sign in with password</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.footer}>
           <Text style={styles.text}>Don't have an account?</Text>
           <TouchableOpacity>
-            <Text style={styles.footerLink}>Sign up</Text>
+            <Text
+              style={styles.footerLink}
+              onPress={() => navigation.navigate("Signup")}
+            >
+              Sign up
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

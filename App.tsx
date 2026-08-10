@@ -1,4 +1,4 @@
-import Login from "@/screens/auth/Login";
+import RootNavigator from "@/navigation/RootNavigator";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -22,12 +22,5 @@ export default function App() {
   if (!loaded && !error) {
     return null;
   }
-  return (
-    // <Otp />
-    // <ForgotPassword />
-    // <Splash />
-    // <Welcome />
-    <Login />
-    // <Signup />
-  );
+  return <RootNavigator />;
 }
