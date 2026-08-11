@@ -1,44 +1,35 @@
-import { nearbyShops } from "@/data/homeData";
+import { popularMenu } from "@/data/homeData";
 import { COLORS } from "@/utils/colors";
 import {
-  ScrollView,
+  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
-import NearbyShopCard from "./NearbyShopCard";
+import ProductCard from "./ProductCard";
 
-export default function NearbyShops() {
+export default function PopularMenu() {
   return (
     <View style={styles.container}>
-      {/* Section Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Nearby Shops</Text>
-
+        <Text style={styles.title}>Popular Menu</Text>
         <TouchableOpacity>
           <Text style={styles.viewAll}>View All</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Shops */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.shops}
-      >
-        {nearbyShops.map((shop) => (
-          <NearbyShopCard
-            key={shop.id}
-            name={shop.name}
-            location={shop.location}
-            distance={shop.distance}
-            rating={shop.rating}
-            image={shop.image}
-          />
-        ))}
-      </ScrollView>
+      <FlatList
+        data={popularMenu}
+        numColumns={2}
+        scrollEnabled={false}
+        columnWrapperStyle={styles.row}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <ProductCard name={item.name} price={item.price} image={item.image} />
+        )}
+      />
     </View>
   );
 }
@@ -47,25 +38,22 @@ const styles = StyleSheet.create({
   container: {
     gap: wp("4%"),
   },
-
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-
   title: {
     fontFamily: "BricolageGrotesque-SemiBold",
     fontSize: 18,
   },
-
   viewAll: {
     fontFamily: "Manrope-SemiBold",
     fontSize: 14,
     color: COLORS.primaryColor,
   },
-
-  shops: {
-    gap: wp("4%"),
+  row: {
+    justifyContent: "space-between",
+    marginBottom: wp("5%"),
   },
 });
