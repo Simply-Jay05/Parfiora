@@ -3,6 +3,7 @@ import AppCheckbox from "@/components/ui/AppCheckbox";
 import BackButton from "@/components/ui/BackButton";
 import PasswordField from "@/components/ui/PasswordField";
 import TextField from "@/components/ui/TextField";
+import { useAuth } from "@/context/AuthContext";
 import { AuthNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -31,6 +32,11 @@ export default function Login() {
   const [remember, setRemember] = useState(false);
 
   const navigation = useNavigation<LoginType>();
+  const { login } = useAuth();
+
+  const handleSubmit = () => {
+    login(email, password);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -88,16 +94,16 @@ export default function Login() {
               </View>
               <View style={styles.footerView}>
                 {/* Signup Button */}
-                <Button title="Sign Up" />
+                <Button title="Sign In" onPress={handleSubmit} />
                 {/* Sign up Link */}
                 <View style={styles.linkView}>
-                  <Text style={styles.text}>Already have an account?</Text>
+                  <Text style={styles.text}>Don't have an account?</Text>
                   <TouchableOpacity>
                     <Text
                       style={styles.link}
                       onPress={() => navigation.navigate("Signup")}
                     >
-                      Sign In
+                      Sign Up
                     </Text>
                   </TouchableOpacity>
                 </View>

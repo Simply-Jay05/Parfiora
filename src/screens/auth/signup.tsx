@@ -1,6 +1,7 @@
 import AuthHeader from "@/components/auth/AuthHeader";
 import AppCheckbox from "@/components/ui/AppCheckbox";
 import BackButton from "@/components/ui/BackButton";
+import { useAuth } from "@/context/AuthContext";
 import { AuthNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
@@ -33,6 +34,11 @@ export default function Signup() {
   const [remember, setRemember] = useState(false);
 
   const navigation = useNavigation<SignupType>();
+  const { signup } = useAuth();
+
+  const handleSubmit = () => {
+    signup(email, password);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -109,7 +115,7 @@ export default function Signup() {
               </View>
               <View style={styles.footerView}>
                 {/* Signup Button */}
-                <Button title="Sign Up" />
+                <Button title="Sign Up" onPress={handleSubmit} />
                 {/* Sign up Link */}
                 <View style={styles.linkView}>
                   <Text style={styles.text}>Already have an account?</Text>

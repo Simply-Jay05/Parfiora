@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/context/AuthContext";
 import RootNavigator from "@/navigation/RootNavigator";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -22,5 +23,9 @@ export default function App() {
   if (!loaded && !error) {
     return null;
   }
-  return <RootNavigator />;
+  return (
+    <AuthProvider>
+      <RootNavigator />
+    </AuthProvider>
+  );
 }
