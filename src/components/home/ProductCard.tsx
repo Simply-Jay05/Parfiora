@@ -17,13 +17,15 @@ type ProductCardProps = {
 
 export default function ProductCard({ name, price, image }: ProductCardProps) {
   return (
-    <TouchableOpacity style={styles.card}>
+    <View style={styles.card}>
       <View style={styles.imgView}>
         <Image style={styles.img} source={image} />
       </View>
-      <Text style={styles.name}>{name}</Text>
-      <Text style={styles.price}>₦{price.toLocaleString()}</Text>
-    </TouchableOpacity>
+      <TouchableOpacity>
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.price}>₦{price.toLocaleString()}</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
 

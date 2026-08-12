@@ -12,17 +12,26 @@ type ButtonProps = {
   onPress?: () => void;
   color?: string;
   style?: StyleProp<ViewStyle>;
+  disabled?: boolean;
 };
 
-export default function Button({ title, onPress, style, color }: ButtonProps) {
+export default function Button({
+  title,
+  onPress,
+  style,
+  color,
+  disabled,
+}: ButtonProps) {
   return (
     <TouchableOpacity
       style={[
         styles.button,
         { backgroundColor: color ?? COLORS.secondaryColor },
         style,
+        disabled && { opacity: 0.5 },
       ]}
       onPress={onPress}
+      disabled={disabled}
     >
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>

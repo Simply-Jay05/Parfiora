@@ -1,7 +1,14 @@
 import { COLORS } from "@/utils/colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+} from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 
 type Props = {
@@ -9,6 +16,7 @@ type Props = {
   placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
+  onBlur?: TextInputProps["onBlur"];
 };
 
 export default function PasswordField({
@@ -16,6 +24,7 @@ export default function PasswordField({
   placeholder,
   value,
   onChangeText,
+  onBlur,
 }: Props) {
   const [showPassword, setShowPassword] = useState(false);
 

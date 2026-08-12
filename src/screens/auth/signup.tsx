@@ -4,8 +4,10 @@ import BackButton from "@/components/ui/BackButton";
 import { useAuth } from "@/context/AuthContext";
 import { AuthNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
+import { signupValidationSchema } from "@/utils/validationSchema";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useFormik } from "formik";
 import { useState } from "react";
 import {
   Keyboard,
@@ -27,18 +29,33 @@ import TextField from "../../components/ui/TextField";
 type SignupType = NavigationProp<AuthNav, "Signup">;
 
 export default function Signup() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [remember, setRemember] = useState(false);
 
   const navigation = useNavigation<SignupType>();
   const { signup } = useAuth();
 
-  const handleSubmit = () => {
-    signup(email, password);
-  };
+  const {
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    touched,
+    errors,
+    values,
+    isValid,
+  } = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      passwordConfirmation: "",
+    },
+    onSubmit: () => {
+      signup(values.email, values.password);
+    },
+    validationSchema: signupValidationSchema,
+    validateOnMount: true,
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -51,6 +68,7 @@ export default function Signup() {
             style={{ flex: 1 }}
             contentContainerStyle={styles.wrapper}
             keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
           >
             <View style={styles.content}>
               {/* Back Button */}
@@ -63,7 +81,7 @@ export default function Signup() {
               {/* Form */}
               <View style={styles.form}>
                 <TextField
-                  label="Full Name"
+                  label="First Name"
                   icon={
                     <FontAwesome
                       name="user"
@@ -71,10 +89,31 @@ export default function Signup() {
                       color={COLORS.secondaryColor}
                     />
                   }
-                  placeholder="Enter your full name"
-                  value={name}
-                  onChangeText={setName}
+                  placeholder="Enter your first name"
+                  value={values.firstName}
+                  onChangeText={handleChange("firstName")}
+                  onBlur={handleBlur("firstName")}
                 />
+                {errors.firstName && touched.firstName && (
+                  <Text style={styles.errorMsg}>{errors.firstName}</Text>
+                )}
+                <TextField
+                  label="Last Name"
+                  icon={
+                    <FontAwesome
+                      name="user"
+                      size={18}
+                      color={COLORS.secondaryColor}
+                    />
+                  }
+                  placeholder="Enter your last name"
+                  value={values.lastName}
+                  onChangeText={handleChange("lastName")}
+                  onBlur={handleBlur("lastName")}
+                />
+                {errors.lastName && touched.lastName && (
+                  <Text style={styles.errorMsg}>{errors.lastName}</Text>
+                )}
                 <TextField
                   label="Email"
                   icon={
@@ -85,21 +124,36 @@ export default function Signup() {
                     />
                   }
                   placeholder="Enter your email"
-                  value={email}
-                  onChangeText={setEmail}
+                  value={values.email}
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
                 />
+                {errors.email && touched.email && (
+                  <Text style={styles.errorMsg}>{errors.email}</Text>
+                )}
                 <PasswordField
                   label="Password"
                   placeholder="Enter your password"
-                  value={password}
-                  onChangeText={setPassword}
+                  value={values.password}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
                 />
+                {errors.password && touched.password && (
+                  <Text style={styles.errorMsg}>{errors.password}</Text>
+                )}
                 <PasswordField
                   label="Confirm Password"
                   placeholder="Confirm your password"
-                  value={passwordConfirmation}
-                  onChangeText={setPasswordConfirmation}
+                  value={values.passwordConfirmation}
+                  onChangeText={handleChange("passwordConfirmation")}
+                  onBlur={handleBlur("passwordConfirmation")}
                 />
+                {errors.passwordConfirmation &&
+                  touched.passwordConfirmation && (
+                    <Text style={styles.errorMsg}>
+                      {errors.passwordConfirmation}
+                    </Text>
+                  )}
                 {/* Checkbox View */}
                 <View style={styles.checkContainer}>
                   <AppCheckbox
@@ -115,7 +169,11 @@ export default function Signup() {
               </View>
               <View style={styles.footerView}>
                 {/* Signup Button */}
-                <Button title="Sign Up" onPress={handleSubmit} />
+                <Button
+                  title="Sign Up"
+                  onPress={handleSubmit}
+                  disabled={!isValid}
+                />
                 {/* Sign up Link */}
                 <View style={styles.linkView}>
                   <Text style={styles.text}>Already have an account?</Text>
@@ -148,7 +206,7 @@ const styles = StyleSheet.create({
     gap: wp("2%"),
   },
   content: {
-    gap: wp("10%"),
+    gap: wp("8%"),
   },
   text: {
     fontFamily: "Manrope-Regular",
@@ -175,5 +233,10 @@ const styles = StyleSheet.create({
   },
   footerView: {
     gap: wp("2%"),
+  },
+  errorMsg: {
+    fontFamily: "Manrope-Regular",
+    color: "red",
+    fontSize: 13,
   },
 });

@@ -19,7 +19,7 @@ export default function NearbyShopCard({
   image,
 }: NearbyShopCardProps) {
   return (
-    <TouchableOpacity style={styles.card}>
+    <View style={styles.card}>
       {/* Shop Image */}
       <View style={styles.imageContainer}>
         <Image source={image} style={styles.image} />
@@ -32,19 +32,20 @@ export default function NearbyShopCard({
       </View>
 
       {/* Shop Information */}
-      <Text style={styles.name} numberOfLines={1}>
-        {name}
-      </Text>
-
-      <Text style={styles.location} numberOfLines={1}>
-        {location}
-      </Text>
+      <TouchableOpacity>
+        <Text style={styles.name} numberOfLines={1}>
+          {name}
+        </Text>
+        <Text style={styles.location} numberOfLines={1}>
+          {location}
+        </Text>
+      </TouchableOpacity>
 
       <View style={styles.distanceView}>
         <View style={styles.dot} />
         <Text style={styles.distance}>{distance}</Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
@@ -114,6 +115,6 @@ const styles = StyleSheet.create({
   distance: {
     fontFamily: "Manrope-Regular",
     fontSize: 10,
-    color: COLORS.grayAccent,
+    color: COLORS.textColor,
   },
 });

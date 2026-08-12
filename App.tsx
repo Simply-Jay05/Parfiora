@@ -3,6 +3,7 @@ import RootNavigator from "@/navigation/RootNavigator";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { StatusBar } from "react-native";
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
@@ -14,7 +15,7 @@ export default function App() {
     "Manrope-SemiBold": require("./assets/fonts/Manrope-SemiBold.ttf"),
     "Caveat-Regular": require("./assets/fonts/Caveat-Regular.ttf"),
   });
-  useEffect(() => {
+  -useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
     }
@@ -25,6 +26,11 @@ export default function App() {
   }
   return (
     <AuthProvider>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="transparent"
+        translucent
+      ></StatusBar>
       <RootNavigator />
     </AuthProvider>
   );

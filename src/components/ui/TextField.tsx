@@ -1,6 +1,12 @@
 import { COLORS } from "@/utils/colors";
 import { ReactNode } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+} from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 
 type Props = {
@@ -9,6 +15,7 @@ type Props = {
   placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
+  onBlur?: TextInputProps["onBlur"];
 };
 
 export default function TextField({
@@ -17,6 +24,7 @@ export default function TextField({
   placeholder,
   value,
   onChangeText,
+  onBlur,
 }: Props) {
   return (
     <View style={styles.container}>
@@ -30,6 +38,7 @@ export default function TextField({
           placeholder={placeholder}
           value={value}
           onChangeText={onChangeText}
+          onBlur={onBlur}
         />
       </View>
     </View>

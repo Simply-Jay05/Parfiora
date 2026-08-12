@@ -6,8 +6,10 @@ import TextField from "@/components/ui/TextField";
 import { useAuth } from "@/context/AuthContext";
 import { AuthNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
+import { loginValidationSchema } from "@/utils/validationSchema";
 import { MaterialIcons } from "@expo/vector-icons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useFormik } from "formik";
 import { useState } from "react";
 import {
   Keyboard,
@@ -27,16 +29,31 @@ import Button from "../../components/ui/Button";
 type LoginType = NavigationProp<AuthNav, "Login">;
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
 
   const navigation = useNavigation<LoginType>();
   const { login } = useAuth();
 
-  const handleSubmit = () => {
-    login(email, password);
-  };
+  const {
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    touched,
+    errors,
+    values,
+    isValid,
+  } = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      passwordConfirmation: "",
+    },
+    onSubmit: () => {
+      login(values.email, values.password);
+    },
+    validationSchema: loginValidationSchema,
+    validateOnMount: true,
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -70,15 +87,23 @@ export default function Login() {
                     />
                   }
                   placeholder="Enter your email"
-                  value={email}
-                  onChangeText={setEmail}
+                  value={values.email}
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
                 />
+                {errors.email && touched.email && (
+                  <Text style={styles.errorMsg}>{errors.email}</Text>
+                )}
                 <PasswordField
                   label="Password"
                   placeholder="Enter your password"
-                  value={password}
-                  onChangeText={setPassword}
+                  value={values.password}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
                 />
+                {errors.password && touched.password && (
+                  <Text style={styles.errorMsg}>{errors.password}</Text>
+                )}
                 {/* Checkbox View */}
                 <View style={styles.checkContainer}>
                   <AppCheckbox
@@ -94,7 +119,11 @@ export default function Login() {
               </View>
               <View style={styles.footerView}>
                 {/* Signup Button */}
-                <Button title="Sign In" onPress={handleSubmit} />
+                <Button
+                  title="Sign In"
+                  onPress={handleSubmit}
+                  disabled={!isValid}
+                />
                 {/* Sign up Link */}
                 <View style={styles.linkView}>
                   <Text style={styles.text}>Don't have an account?</Text>
@@ -152,5 +181,10 @@ const styles = StyleSheet.create({
   },
   footerView: {
     gap: wp("2%"),
+  },
+  errorMsg: {
+    fontFamily: "Manrope-Regular",
+    color: "red",
+    fontSize: 13,
   },
 });
