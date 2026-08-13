@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#EAEAEA",
   },
-
   iconContainer: {
     width: wp("12%"),
     height: wp("12%"),
@@ -50,18 +49,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
   },
-
   content: {
     flex: 1,
     gap: wp("1%"),
   },
-
   label: {
     fontFamily: "Manrope-SemiBold",
     fontSize: 16,
     color: COLORS.textColor,
   },
-
   address: {
     fontFamily: "Manrope-Regular",
     fontSize: 13,

@@ -14,6 +14,7 @@ type Props = {
   icon?: ReactNode;
   placeholder: string;
   value: string;
+  keyboardType?: TextInputProps["keyboardType"];
   onChangeText: (text: string) => void;
   onBlur?: TextInputProps["onBlur"];
 };
@@ -23,6 +24,7 @@ export default function TextField({
   icon,
   placeholder,
   value,
+  keyboardType,
   onChangeText,
   onBlur,
 }: Props) {
@@ -39,6 +41,7 @@ export default function TextField({
           value={value}
           onChangeText={onChangeText}
           onBlur={onBlur}
+          keyboardType={keyboardType}
         />
       </View>
     </View>

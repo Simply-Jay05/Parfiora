@@ -52,39 +52,31 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.bgColor,
     paddingHorizontal: wp("5%"),
   },
-
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: wp("4%"),
   },
-
   headerTitle: {
     fontFamily: "BricolageGrotesque-SemiBold",
     fontSize: 20,
     color: COLORS.textColor,
   },
-
   content: {
     paddingTop: wp("2%"),
     paddingBottom: wp("5%"),
   },
-
   addButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: wp("2%"),
-
     backgroundColor: COLORS.secondaryColor,
-
     height: 56,
     borderRadius: 28,
-
     marginBottom: wp("4%"),
   },
-
   addButtonText: {
     fontFamily: "Manrope-SemiBold",
     fontSize: 16,

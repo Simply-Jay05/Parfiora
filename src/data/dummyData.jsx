@@ -207,3 +207,34 @@ export const savedLocations = [
     icon: "briefcase",
   },
 ];
+
+export const favorites = [
+  {
+    id: "5",
+    name: "Vanilla Dream",
+    category: "Classic",
+    price: 3500,
+    image: require("../../assets/images/products/chocolate(2).png"),
+  },
+  {
+    id: "6",
+    name: "Oreo Heaven",
+    category: "Chocolate",
+    price: 4500,
+    image: require("../../assets/images/products/oreo-cookie(1).png"),
+  },
+  {
+    id: "3",
+    name: "Chocolate Crunch",
+    category: "Chocolate",
+    price: 4000,
+    image: require("../../assets/images/products/chocolate(2).png"),
+  },
+  {
+    id: "4",
+    name: "Tropical Bliss",
+    category: "Tropical",
+    price: 4500,
+    image: require("../../assets/images/products/coconut(1).png"),
+  },
+];

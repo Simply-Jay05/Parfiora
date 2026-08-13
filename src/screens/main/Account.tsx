@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import SavedLocations from "./SavedLocations";
+import Favorites from "./Favourites";
 
 export default function Account() {
-  return <SavedLocations />;
+  return <Favorites />;
 }
 const styles = StyleSheet.create({});
