@@ -238,3 +238,30 @@ export const favorites = [
     image: require("../../assets/images/products/coconut(1).png"),
   },
 ];
+
+export const orders = [
+  {
+    id: "ORD-1024",
+    shop: "Sweet Treats Abuja",
+    date: "Aug 10, 2026",
+    status: "Delivered",
+    total: 8500,
+    items: 2,
+  },
+  {
+    id: "ORD-1023",
+    shop: "Parfait Hub",
+    date: "Aug 7, 2026",
+    status: "Delivered",
+    total: 6500,
+    items: 2,
+  },
+  {
+    id: "ORD-1022",
+    shop: "Berry Bowl Café",
+    date: "Aug 5, 2026",
+    status: "Cancelled",
+    total: 4200,
+    items: 1,
+  },
+];

@@ -3,6 +3,12 @@ export type AppNav = {
   Explore: undefined;
   Orders: undefined;
   Account: undefined;
+  MyOrders: undefined;
+  EditProfile: undefined;
+  Favourites: undefined;
+  Settings: undefined;
+  SavedLocations: undefined;
+  Notifications: undefined;
 };
 
 export type AuthNav = {

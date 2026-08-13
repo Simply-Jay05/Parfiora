@@ -49,7 +49,7 @@ export default function TabNavigator() {
         component={Orders}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="receipt" size={size} color={color} />
+            <Ionicons name="cart" size={size} color={color} />
           ),
         }}
       />

@@ -1,12 +1,31 @@
 import CartItem from "@/components/orders/CartItem";
 import Button from "@/components/ui/Button";
 import { cartItems } from "@/data/dummyData";
+import { AppNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+type OrdersTypes = NavigationProp<AppNav, "Orders">;
+
 export default function Orders() {
+  const [items, setItems] = useState(cartItems);
+  const navigation = useNavigation<OrdersTypes>();
+
+  const removeItem = (id: string) => {
+    setItems((currentItems) => currentItems.filter((item) => item.id !== id));
+  };
+
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0,
@@ -19,46 +38,73 @@ export default function Orders() {
         contentContainerStyle={styles.wrapper}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>Your Orders</Text>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Cart Order</Text>
+          <TouchableOpacity
+            style={styles.myOrdersBtn}
+            onPress={() => navigation.navigate("MyOrders")}
+          >
+            <Ionicons name="receipt" size={23} color={COLORS.primaryColor} />
+            <Text style={styles.myOrdersText}>My Orders</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.list}>
-          {cartItems.map((item) => (
+          {items.map((item) => (
             <CartItem
               key={item.id}
               name={item.name}
               price={item.price}
               quantity={item.quantity}
               image={item.image}
+              onDelete={() => removeItem(item.id)}
             />
           ))}
         </View>
 
-        <View style={styles.summary}>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryText}>Subtotal</Text>
-            <Text style={styles.summaryText}>
-              {" "}
-              ₦{subtotal.toLocaleString()}
+        {items.length > 0 && (
+          <>
+            <View style={styles.summary}>
+              <View style={styles.summaryRow}>
+                <Text style={styles.summaryText}>Subtotal</Text>
+                <Text style={styles.summaryText}>
+                  ₦{subtotal.toLocaleString()}
+                </Text>
+              </View>
+
+              <View style={styles.summaryRow}>
+                <Text style={styles.summaryText}>Delivery Fee</Text>
+                <Text style={styles.summaryText}>
+                  ₦{deliveryFee.toLocaleString()}
+                </Text>
+              </View>
+
+              <View style={styles.divider} />
+
+              <View style={styles.summaryRow}>
+                <Text style={styles.totalText}>Total</Text>
+                <Text style={styles.totalText}>₦{total.toLocaleString()}</Text>
+              </View>
+            </View>
+
+            <Button title="Proceed to Payment" style={styles.checkoutBtn} />
+          </>
+        )}
+
+        {items.length === 0 && (
+          <View style={styles.emptyCart}>
+            <Ionicons
+              name="cart-outline"
+              size={70}
+              color={COLORS.primaryColor}
+            />
+            <Text style={styles.emptyTitle}>Your cart is empty</Text>
+            <Text style={styles.emptyText}>
+              Explore delicious parfaits and add something to your cart.
             </Text>
           </View>
-
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryText}>Delivery Fee</Text>
-            <Text style={styles.summaryText}>
-              {" "}
-              ₦{deliveryFee.toLocaleString()}
-            </Text>
-          </View>
-
-          <View style={styles.divider}></View>
-
-          <View style={styles.summaryRow}>
-            <Text style={styles.totalText}>Total</Text>
-            <Text style={styles.totalText}>₦{total.toLocaleString()}</Text>
-          </View>
-        </View>
-
-        <Button title="Proceed to Payment" style={styles.checkoutBtn} />
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -75,12 +121,26 @@ const styles = StyleSheet.create({
     paddingBottom: wp("8%"),
     gap: wp("7%"),
   },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   title: {
     fontFamily: "BricolageGrotesque-SemiBold",
-    fontSize: 28,
+    fontSize: 26,
     color: COLORS.textColor,
   },
+  myOrdersBtn: {
+    alignItems: "center",
+    // gap: wp("1.5%"),
+  },
 
+  myOrdersText: {
+    fontFamily: "Manrope-SemiBold",
+    fontSize: 13,
+    color: COLORS.primaryColor,
+  },
   list: {
     gap: wp("4%"),
   },
@@ -107,5 +167,25 @@ const styles = StyleSheet.create({
   },
   checkoutBtn: {
     marginBottom: wp("5%"),
+  },
+  emptyTitle: {
+    fontFamily: "BricolageGrotesque-SemiBold",
+    fontSize: 20,
+    color: COLORS.textColor,
+  },
+
+  emptyText: {
+    fontFamily: "Manrope-Regular",
+    fontSize: 14,
+    color: COLORS.primaryColor,
+    textAlign: "center",
+    paddingHorizontal: wp("10%"),
+  },
+  emptyCart: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: wp("20%"),
+    gap: wp("3%"),
   },
 });

@@ -8,6 +8,7 @@ type CartItemProps = {
   price: number;
   quantity: number;
   image: any;
+  onDelete?: () => void;
 };
 
 export default function CartItem({
@@ -15,15 +16,24 @@ export default function CartItem({
   price,
   quantity,
   image,
+  onDelete,
 }: CartItemProps) {
   return (
     <View style={styles.container}>
       <Image source={image} style={styles.image} />
 
       <View style={styles.content}>
-        <View>
-          <Text style={styles.name}>{name}</Text>
-          <Text style={styles.price}>₦{price.toLocaleString()}</Text>
+        <View style={styles.topView}>
+          <View>
+            <Text style={styles.name}>{name}</Text>
+            <Text style={styles.price}>₦{price.toLocaleString()}</Text>
+          </View>
+
+          <View>
+            <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+              <Ionicons name="trash-outline" size={22} color="#D9534F" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.quantityView}>
@@ -75,22 +85,33 @@ const styles = StyleSheet.create({
     color: COLORS.secondaryColor,
     marginTop: wp("1"), //
   },
+  topView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+  },
   quantityView: {
     flexDirection: "row",
     alignItems: "center",
     gap: wp("4%"),
   },
   quantityBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 3,
+    width: 28,
+    height: 28,
+    borderRadius: 6,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: COLORS.secondaryColor,
   },
-  textColor: {},
   quantity: {
     fontFamily: "Manrope-SemiBold",
     fontSize: 16,
+  },
+  deleteButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

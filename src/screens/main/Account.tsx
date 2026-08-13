@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import Favorites from "./Favourites";
+import MyOrders from "./MyOrders";
 
 export default function Account() {
-  return <Favorites />;
+  return <MyOrders />;
 }
 const styles = StyleSheet.create({});
