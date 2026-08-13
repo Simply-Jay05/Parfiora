@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 
   name: {
     fontFamily: "Manrope-Medium",
-    fontSize: 13,
+    fontSize: 14,
     color: COLORS.textColor,
   },
 });

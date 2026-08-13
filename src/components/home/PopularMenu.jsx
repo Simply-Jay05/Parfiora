@@ -1,4 +1,4 @@
-import { popularMenu } from "@/data/homeData";
+import { popularMenu } from "@/data/dummyData";
 import { COLORS } from "@/utils/colors";
 import {
   FlatList,
@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "BricolageGrotesque-SemiBold",
-    fontSize: 18,
+    fontSize: 20,
   },
   viewAll: {
     fontFamily: "Manrope-SemiBold",
-    fontSize: 14,
-    color: COLORS.primaryColor,
+    fontSize: 16,
+    color: COLORS.secondaryColor,
   },
   row: {
     justifyContent: "space-between",

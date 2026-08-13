@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
-import { homeUser } from "@/data/homeData";
+import { homeUser } from "@/data/dummyData";
 import { COLORS } from "@/utils/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";

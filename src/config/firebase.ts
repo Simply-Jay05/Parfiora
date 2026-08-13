@@ -1,4 +1,4 @@
-import { createAsyncStorage } from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp } from "firebase/app";
 import { getReactNativePersistence, initializeAuth } from "firebase/auth";
 
@@ -13,9 +13,11 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const appStorage = createAsyncStorage("parfiora");
 const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(appStorage),
+  persistence: getReactNativePersistence(AsyncStorage),
 });
+
+AsyncStorage?.getAllKeys()?.then(console.log);
+
 export { auth };
 

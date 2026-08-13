@@ -4,10 +4,7 @@ import NearbyShops from "@/components/home/NearbyShop";
 import PopularMenu from "@/components/home/PopularMenu";
 import PromotionBanner from "@/components/home/PromotionBanner";
 import { COLORS } from "@/utils/colors";
-import {
-  ScrollView,
-  StyleSheet
-} from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -45,7 +42,7 @@ const styles = StyleSheet.create({
   },
 
   wrapper: {
-    gap: wp("5%"),
+    gap: wp("6%"),
   },
 
   popularView: {

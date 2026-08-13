@@ -35,6 +35,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: wp("3%"),
     borderRadius: wp("3%"),
+    elevation: 2,
+    // iOS
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
   },
   imgView: {
     width: "100%",

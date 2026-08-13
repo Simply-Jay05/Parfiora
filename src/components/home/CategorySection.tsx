@@ -1,4 +1,4 @@
-import { categories } from "@/data/homeData";
+import { categories } from "@/data/dummyData";
 import { COLORS } from "@/utils/colors";
 import {
   ScrollView,
@@ -41,6 +41,15 @@ export default function CategorySection() {
 const styles = StyleSheet.create({
   container: {
     gap: wp("4%"),
+    backgroundColor: "white",
+    padding: wp("4%"),
+    borderRadius: wp("4%"),
+    elevation: 2,
+    // iOS
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
   },
 
   header: {
@@ -51,14 +60,14 @@ const styles = StyleSheet.create({
 
   title: {
     fontFamily: "BricolageGrotesque-SemiBold",
-    fontSize: 18,
+    fontSize: 20,
     color: COLORS.textColor,
   },
 
   viewAll: {
     fontFamily: "Manrope-SemiBold",
-    fontSize: 14,
-    color: COLORS.primaryColor,
+    fontSize: 16,
+    color: COLORS.secondaryColor,
   },
 
   categories: {

@@ -6,4 +6,5 @@ export const COLORS = {
   bgColor: "#fbf3e7",
   textColor: "#2b1620",
   grayAccent: "#d7d3d3",
+  bgSecColor: "#ffff",
 };

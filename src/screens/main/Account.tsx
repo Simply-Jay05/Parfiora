@@ -1,9 +1,7 @@
-import { Text, View } from "react-native";
+import Notifications from "@/screens/main/Notification";
+import { StyleSheet } from "react-native";
 
 export default function Account() {
-  return (
-    <View>
-      <Text>Account</Text>
-    </View>
-  );
+  return <Notifications />;
 }
+const styles = StyleSheet.create({});
