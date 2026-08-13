@@ -9,6 +9,7 @@ export type AppNav = {
   Settings: undefined;
   SavedLocations: undefined;
   Notifications: undefined;
+  OrderDetails: undefined;
 };
 
 export type AuthNav = {

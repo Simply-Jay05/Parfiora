@@ -9,7 +9,7 @@ type OrderCardProps = {
   date: string;
   status: string;
   total: number;
-  items: number;
+  items: any[];
   onPress?: () => void;
 };
 
@@ -41,7 +41,7 @@ export default function OrderCard({
         <Text style={styles.date}>{date}</Text>
         <View style={styles.dot} />
         <Text style={styles.date}>
-          {items} {items === 1 ? "item" : "items"}
+          {items.length} {items.length === 1 ? "item" : "items"}
         </Text>
       </View>
 

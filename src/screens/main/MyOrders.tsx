@@ -1,12 +1,17 @@
 import OrderCard from "@/components/orders/OrderCard";
 import BackButton from "@/components/ui/BackButton";
 import { orders } from "@/data/dummyData";
+import { AppNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+type MyOrdersType = NavigationProp<AppNav, "MyOrders">;
+
 export default function MyOrders() {
+  const navigation = useNavigation<MyOrdersType>();
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -28,6 +33,9 @@ export default function MyOrders() {
             status={item.status}
             total={item.total}
             items={item.items}
+            onPress={() =>
+              navigation.navigate("OrderDetails", { order: item } as never)
+            }
           />
         )}
       />

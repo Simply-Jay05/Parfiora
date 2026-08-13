@@ -246,22 +246,61 @@ export const orders = [
     date: "Aug 10, 2026",
     status: "Delivered",
     total: 8500,
-    items: 2,
+    deliveryFee: 1000,
+    address: "12 Ademola Crescent, Wuse 2, Abuja",
+    items: [
+      {
+        id: "1",
+        name: "Berry Bliss Parfait",
+        price: 3500,
+        quantity: 1,
+        image: require("../../assets/images/products/blueberry(1).png"),
+      },
+      {
+        id: "2",
+        name: "Chocolate Crunch Parfait",
+        price: 4000,
+        quantity: 1,
+        image: require("../../assets/images/products/chocolate(2).png"),
+      },
+    ],
   },
+
   {
     id: "ORD-1023",
     shop: "Parfait Hub",
     date: "Aug 7, 2026",
     status: "Delivered",
     total: 6500,
-    items: 2,
+    deliveryFee: 1000,
+    address: "Plot 45, Aminu Kano Crescent, Wuse 2, Abuja",
+    items: [
+      {
+        id: "3",
+        name: "Tropical Fruit Parfait",
+        price: 5500,
+        quantity: 1,
+        image: require("../../assets/images/products/mango(1).png"),
+      },
+    ],
   },
+
   {
     id: "ORD-1022",
     shop: "Berry Bowl Café",
     date: "Aug 5, 2026",
     status: "Cancelled",
     total: 4200,
-    items: 1,
+    deliveryFee: 0,
+    address: "Wuse Zone 4, Abuja",
+    items: [
+      {
+        id: "4",
+        name: "Classic Yogurt Parfait",
+        price: 4200,
+        quantity: 1,
+        image: require("../../assets/images/products/white-chocolate(2).png"),
+      },
+    ],
   },
 ];
