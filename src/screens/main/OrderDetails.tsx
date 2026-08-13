@@ -174,10 +174,16 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: wp("3%"),
-    backgroundColor: COLORS.grayAccent,
+    backgroundColor: COLORS.bgSecColor,
     paddingVertical: wp("2%"),
     paddingHorizontal: wp("4%"),
     borderRadius: wp("2%"),
+    elevation: 1,
+    // iOS
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
   },
   sectionTitle: {
     fontFamily: "Manrope-SemiBold",

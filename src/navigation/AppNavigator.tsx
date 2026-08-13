@@ -1,3 +1,4 @@
+import Checkout from "@/screens/main/Checkout";
 import EditProfile from "@/screens/main/EditProfile";
 import Favorites from "@/screens/main/Favourites";
 import MyOrders from "@/screens/main/MyOrders";
@@ -16,6 +17,7 @@ export default function AppNavigator() {
       <AppStack.Screen name="Tab" component={TabNavigator} />
       <AppStack.Screen name="MyOrders" component={MyOrders} />
       <AppStack.Screen name="OrderDetails" component={OrderDetails} />
+      <AppStack.Screen name="Checkout" component={Checkout} />
       <AppStack.Screen name="EditProfile" component={EditProfile} />
       <AppStack.Screen name="Favourites" component={Favorites} />
       <AppStack.Screen name="Settings" component={Settings} />

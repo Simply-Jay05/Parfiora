@@ -88,7 +88,11 @@ export default function Orders() {
               </View>
             </View>
 
-            <Button title="Proceed to Payment" style={styles.checkoutBtn} />
+            <Button
+              title="Proceed to Payment"
+              style={styles.checkoutBtn}
+              onPress={() => navigation.navigate("Checkout")}
+            />
           </>
         )}
 
@@ -133,7 +137,6 @@ const styles = StyleSheet.create({
   },
   myOrdersBtn: {
     alignItems: "center",
-    // gap: wp("1.5%"),
   },
 
   myOrdersText: {
