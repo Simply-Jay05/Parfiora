@@ -192,3 +192,18 @@ export const notifications = [
     read: true,
   },
 ];
+
+export const savedLocations = [
+  {
+    id: "1",
+    label: "Home",
+    address: "12 Ademola Crescent, Wuse 2, Abuja",
+    icon: "home",
+  },
+  {
+    id: "2",
+    label: "Work",
+    address: "Plot 45, Aminu Kano Crescent, Wuse 2, Abuja",
+    icon: "briefcase",
+  },
+];

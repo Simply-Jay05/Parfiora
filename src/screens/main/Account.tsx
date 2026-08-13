@@ -1,7 +1,7 @@
-import Notifications from "@/screens/main/Notification";
 import { StyleSheet } from "react-native";
+import SavedLocations from "./SavedLocations";
 
 export default function Account() {
-  return <Notifications />;
+  return <SavedLocations />;
 }
 const styles = StyleSheet.create({});
