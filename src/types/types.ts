@@ -11,6 +11,7 @@ export type AppNav = {
   Notifications: undefined;
   OrderDetails: undefined;
   Checkout: undefined;
+  OrderSuccess: undefined;
 };
 
 export type AuthNav = {

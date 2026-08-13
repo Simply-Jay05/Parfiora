@@ -1,15 +1,20 @@
 import { useAuth } from "@/context/AuthContext";
 import { homeUser } from "@/data/dummyData";
+import { AppNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { Ionicons } from "@expo/vector-icons";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+
+type HomeType = NavigationProp<AppNav, "Home">;
 
 export default function HomeHeader() {
   const { signout } = useAuth();
   const handleSubmit = () => {
     signout();
   };
+  const navigation = useNavigation<HomeType>();
   return (
     <View style={styles.container}>
       {/* User */}
@@ -27,11 +32,14 @@ export default function HomeHeader() {
       </View>
 
       {/* Notification */}
-      <TouchableOpacity style={styles.notifyBtn} onPress={handleSubmit}>
+      <TouchableOpacity
+        style={styles.notifyBtn}
+        onPress={() => navigation.navigate("Notifications")}
+      >
         <Ionicons
           name="notifications-sharp"
           size={20}
-          color={COLORS.goldAccent}
+          color={COLORS.primaryColor}
         />
       </TouchableOpacity>
     </View>

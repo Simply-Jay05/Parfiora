@@ -4,6 +4,7 @@ import Favorites from "@/screens/main/Favourites";
 import MyOrders from "@/screens/main/MyOrders";
 import Notifications from "@/screens/main/Notification";
 import OrderDetails from "@/screens/main/OrderDetails";
+import OrderSuccess from "@/screens/main/OrderSuccess";
 import SavedLocations from "@/screens/main/SavedLocations";
 import Settings from "@/screens/main/Settings";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -18,6 +19,7 @@ export default function AppNavigator() {
       <AppStack.Screen name="MyOrders" component={MyOrders} />
       <AppStack.Screen name="OrderDetails" component={OrderDetails} />
       <AppStack.Screen name="Checkout" component={Checkout} />
+      <AppStack.Screen name="OrderSuccess" component={OrderSuccess} />
       <AppStack.Screen name="EditProfile" component={EditProfile} />
       <AppStack.Screen name="Favourites" component={Favorites} />
       <AppStack.Screen name="Settings" component={Settings} />

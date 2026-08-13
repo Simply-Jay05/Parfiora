@@ -13,6 +13,7 @@ type ButtonProps = {
   color?: string;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
+  textColor?: string;
 };
 
 export default function Button({
@@ -21,6 +22,7 @@ export default function Button({
   style,
   color,
   disabled,
+  textColor = "#fff",
 }: ButtonProps) {
   return (
     <TouchableOpacity
@@ -33,7 +35,7 @@ export default function Button({
       onPress={onPress}
       disabled={disabled}
     >
-      <Text style={styles.text}>{title}</Text>
+      <Text style={[styles.text, { color: textColor }]}>{title}</Text>
     </TouchableOpacity>
   );
 }
