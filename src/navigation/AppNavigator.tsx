@@ -16,7 +16,7 @@ const AppStack = createNativeStackNavigator();
 export default function AppNavigator() {
   return (
     <AppStack.Navigator screenOptions={{ headerShown: false }}>
-      <AppStack.Screen name="Tab" component={TabNavigator} />
+      <AppStack.Screen name="Main" component={TabNavigator} />
       <AppStack.Screen name="ProductDetails" component={ProductDetails} />
       <AppStack.Screen name="MyOrders" component={MyOrders} />
       <AppStack.Screen name="OrderDetails" component={OrderDetails} />

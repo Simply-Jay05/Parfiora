@@ -1,16 +1,24 @@
 import SettingsRow from "@/components/account/SettingsRow";
-import { AppNav } from "@/types/types";
+import { AppNav, TabNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import {
+  CompositeNavigationProp,
+  useNavigation
+} from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type AccountType = NavigationProp<AppNav, "Account">;
+type AccountNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<TabNav, "Account">,
+  NativeStackNavigationProp<AppNav>
+>;
 
 export default function Account() {
-  const navigation = useNavigation<AccountType>();
+  const navigation = useNavigation<AccountNavigationProp>();
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>

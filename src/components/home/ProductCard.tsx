@@ -1,4 +1,6 @@
+import { AppNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import {
   Image,
   ImageSourcePropType,
@@ -17,18 +19,30 @@ type ProductCardProps = {
   showFavorite?: boolean;
 };
 
+type ProduCardType = NavigationProp<AppNav, "ProductDetails">;
+
 export default function ProductCard({
   id,
   name,
   price,
   image,
 }: ProductCardProps) {
+  const navigation = useNavigation<ProduCardType>();
   return (
     <View style={styles.card}>
-      <View style={styles.imgView}>
-        <Image style={styles.img} source={image} />
-      </View>
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("ProductDetails", {
+            id,
+            name,
+            price,
+            image,
+          } as never)
+        }
+      >
+        <View style={styles.imgView}>
+          <Image style={styles.img} source={image} />
+        </View>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.price}>₦{price.toLocaleString()}</Text>
       </TouchableOpacity>

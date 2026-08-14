@@ -4,19 +4,33 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 
 type CartItemProps = {
+  id: string;
   name: string;
   price: number;
   quantity: number;
   image: any;
+  size?: string;
+  base?: string;
+  toppings?: string[];
+  extras?: string[];
   onDelete?: () => void;
+  onIncrease?: () => void;
+  onDecrease?: () => void;
 };
 
 export default function CartItem({
+  id,
   name,
   price,
   quantity,
   image,
+  size,
+  base,
+  toppings,
+  extras,
   onDelete,
+  onIncrease,
+  onDecrease,
 }: CartItemProps) {
   return (
     <View style={styles.container}>
@@ -24,8 +38,29 @@ export default function CartItem({
 
       <View style={styles.content}>
         <View style={styles.topView}>
-          <View>
-            <Text style={styles.name}>{name}</Text>
+          <View style={styles.details}>
+            <Text style={styles.name} numberOfLines={2}>
+              {name}
+            </Text>
+
+            {!!size || !!base ? (
+              <Text style={styles.customization}>
+                {[size, base].filter(Boolean).join(" • ")}
+              </Text>
+            ) : null}
+
+            {toppings && toppings.length > 0 && (
+              <Text style={styles.customization} numberOfLines={2}>
+                {toppings.join(", ")}
+              </Text>
+            )}
+
+            {extras && extras.length > 0 && (
+              <Text style={styles.customization} numberOfLines={2}>
+                + {extras.join(", ")}
+              </Text>
+            )}
+
             <Text style={styles.price}>₦{price.toLocaleString()}</Text>
           </View>
 
@@ -37,11 +72,11 @@ export default function CartItem({
         </View>
 
         <View style={styles.quantityView}>
-          <TouchableOpacity style={styles.quantityBtn}>
+          <TouchableOpacity style={styles.quantityBtn} onPress={onDecrease}>
             <Ionicons name="remove" size={22} color="white" />
           </TouchableOpacity>
           <Text style={styles.quantity}>{quantity}</Text>
-          <TouchableOpacity style={styles.quantityBtn}>
+          <TouchableOpacity style={styles.quantityBtn} onPress={onIncrease}>
             <Ionicons name="add" size={22} color="white" />
           </TouchableOpacity>
         </View>
@@ -65,14 +100,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   image: {
-    width: wp("24%"),
-    height: wp("24%"),
+    width: wp("22%"),
+    height: wp("22%"),
     borderRadius: wp("3%"),
     resizeMode: "cover",
   },
   content: {
     flex: 1,
     justifyContent: "space-between",
+    gap: wp("2%"),
+  },
+  details: {
+    flex: 1,
+    minWidth: 0,
+    gap: wp("1%"),
   },
   name: {
     fontFamily: "Manrope-Semibold",
@@ -108,10 +149,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   deleteButton: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    justifyContent: "center",
+    width: 40,
+    height: 40,
     alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  customization: {
+    fontFamily: "Manrope-Regular",
+    fontSize: 12,
+    color: COLORS.secondaryColor,
   },
 });

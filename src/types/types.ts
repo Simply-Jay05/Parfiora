@@ -1,16 +1,24 @@
+import { NavigatorScreenParams } from "@react-navigation/native";
+import { ImageSourcePropType } from "react-native";
+
 export type AppNav = {
-  Home: undefined;
-  Explore: undefined;
-  Orders: undefined;
-  Account: undefined;
-  ProductDetails: undefined;
+  Main: NavigatorScreenParams<TabNav>;
+  ProductDetails: {
+    id: string;
+    name: string;
+    price: number;
+    image: ImageSourcePropType;
+  };
   MyOrders: undefined;
   EditProfile: undefined;
   Favourites: undefined;
   Settings: undefined;
   SavedLocations: undefined;
   Notifications: undefined;
-  OrderDetails: undefined;
+  OrderDetails: {
+    // We'll add the actual order data later
+    orderId: string;
+  };
   Checkout: undefined;
   OrderSuccess: undefined;
 };
@@ -20,4 +28,11 @@ export type AuthNav = {
   Login: undefined;
   Signup: undefined;
   OTP: undefined;
+};
+
+export type TabNav = {
+  Home: undefined;
+  Explore: undefined;
+  Orders: undefined;
+  Account: undefined;
 };

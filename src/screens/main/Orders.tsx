@@ -1,11 +1,16 @@
 import CartItem from "@/components/orders/CartItem";
+import EmptyCart from "@/components/orders/EmptyCart";
 import Button from "@/components/ui/Button";
-import { cartItems } from "@/data/dummyData";
-import { AppNav } from "@/types/types";
+import { useCart } from "@/context/CartContext";
+import { AppNav, TabNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { useState } from "react";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   ScrollView,
   StyleSheet,
@@ -16,15 +21,14 @@ import {
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type OrdersTypes = NavigationProp<AppNav, "Orders">;
+type OrdersNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<TabNav, "Orders">,
+  NativeStackNavigationProp<AppNav>
+>;
 
 export default function Orders() {
-  const [items, setItems] = useState(cartItems);
-  const navigation = useNavigation<OrdersTypes>();
-
-  const removeItem = (id: string) => {
-    setItems((currentItems) => currentItems.filter((item) => item.id !== id));
-  };
+  const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const navigation = useNavigation<OrdersNavigationProp>();
 
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -32,6 +36,17 @@ export default function Orders() {
   );
   const deliveryFee = 1000;
   const total = subtotal + deliveryFee;
+
+  if (cartItems.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.title}>Your Orders</Text>
+
+        <EmptyCart onExplore={() => navigation.navigate("Explore")} />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -51,19 +66,26 @@ export default function Orders() {
         </View>
 
         <View style={styles.list}>
-          {items.map((item) => (
+          {cartItems.map((item) => (
             <CartItem
-              key={item.id}
+              key={`${item.id}-${item.size}-${item.base}-${item.toppings?.join("-")}`}
+              id={item.id}
               name={item.name}
               price={item.price}
               quantity={item.quantity}
               image={item.image}
-              onDelete={() => removeItem(item.id)}
+              size={item.size}
+              base={item.base}
+              toppings={item.toppings}
+              extras={item.extras}
+              onDelete={() => removeFromCart(item)}
+              onIncrease={() => updateQuantity(item, "increase")}
+              onDecrease={() => updateQuantity(item, "decrease")}
             />
           ))}
         </View>
 
-        {items.length > 0 && (
+        {cartItems.length > 0 && (
           <>
             <View style={styles.summary}>
               <View style={styles.summaryRow}>
@@ -94,20 +116,6 @@ export default function Orders() {
               onPress={() => navigation.navigate("Checkout")}
             />
           </>
-        )}
-
-        {items.length === 0 && (
-          <View style={styles.emptyCart}>
-            <Ionicons
-              name="cart-outline"
-              size={70}
-              color={COLORS.primaryColor}
-            />
-            <Text style={styles.emptyTitle}>Your cart is empty</Text>
-            <Text style={styles.emptyText}>
-              Explore delicious parfaits and add something to your cart.
-            </Text>
-          </View>
         )}
       </ScrollView>
     </SafeAreaView>
