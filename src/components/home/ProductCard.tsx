@@ -10,13 +10,19 @@ import {
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 
 type ProductCardProps = {
+  id: string;
   name: string;
   price: number;
   image: ImageSourcePropType;
   showFavorite?: boolean;
 };
 
-export default function ProductCard({ name, price, image }: ProductCardProps) {
+export default function ProductCard({
+  id,
+  name,
+  price,
+  image,
+}: ProductCardProps) {
   return (
     <View style={styles.card}>
       <View style={styles.imgView}>
