@@ -1,5 +1,6 @@
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
+import { OrderProvider } from "@/context/OrderContext";
 import RootNavigator from "@/navigation/RootNavigator";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -28,12 +29,14 @@ export default function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <StatusBar
-          barStyle="dark-content"
-          backgroundColor="transparent"
-          translucent
-        ></StatusBar>
-        <RootNavigator />
+        <OrderProvider>
+          <StatusBar
+            barStyle="dark-content"
+            backgroundColor="transparent"
+            translucent
+          ></StatusBar>
+          <RootNavigator />
+        </OrderProvider>
       </CartProvider>
     </AuthProvider>
   );
