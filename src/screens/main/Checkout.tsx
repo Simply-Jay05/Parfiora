@@ -1,21 +1,19 @@
 import BackButton from "@/components/ui/BackButton";
 import Button from "@/components/ui/Button";
-import { cartItems } from "@/data/dummyData";
+import { useCart } from "@/context/CartContext";
+import { AppNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
-import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+type CheckoutType = NavigationProp<AppNav, "Checkout">;
+
 export default function Checkout() {
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const navigation = useNavigation<CheckoutType>();
+  const { cartItems } = useCart();
 
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -25,9 +23,13 @@ export default function Checkout() {
   const deliveryFee = 1000;
   const total = subtotal + deliveryFee;
 
+  const handlePayment = () => {
+    // Paystack payment logic will go here
+    navigation.navigate("OrderSuccess");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <BackButton />
         <Text style={styles.headerTitle}>Checkout</Text>
@@ -35,43 +37,84 @@ export default function Checkout() {
       </View>
 
       <ScrollView
-        contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.content}
       >
-        {/* Delivery Address */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Delivery Address</Text>
-          <TouchableOpacity style={styles.addressCard}>
-            <View style={styles.addressIcon}>
-              <Ionicons
-                name="location"
-                size={22}
-                color={COLORS.secondaryColor}
-              />
-            </View>
-
-            <View style={styles.addressContent}>
-              <Text style={styles.addressTitle}>Home</Text>
-              <Text style={styles.addressText}>
-                12 Ademola Crescent, Wuse 2, Abuja
-              </Text>
-            </View>
-
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Delivery Address</Text>
             <Ionicons
-              name="chevron-forward"
+              name="location-outline"
               size={22}
               color={COLORS.primaryColor}
             />
-          </TouchableOpacity>
+          </View>
+
+          <View style={styles.addressCard}>
+            <Text style={styles.addressTitle}>Home</Text>
+            <Text style={styles.addressText}>
+              No. 12 Example Street, Abuja, Nigeria
+            </Text>
+            <Text style={styles.addressText}>+234 812 345 7890</Text>
+          </View>
         </View>
 
         {/* Order Summary */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Order Summary</Text>
+          <View style={styles.orderList}>
+            {cartItems.map((item, index) => (
+              <View key={`${item.id}-${index}`} style={styles.orderItem}>
+                <View style={styles.orderItemInfo}>
+                  <Text style={styles.orderItemName} numberOfLines={1}>
+                    {item.name}
+                  </Text>
+                  <Text style={styles.orderItemQuantity}>
+                    Quantity: {item.quantity}
+                  </Text>
+                </View>
 
+                <Text style={styles.orderItemPrice}>
+                  ₦{(item.price * item.quantity).toLocaleString()}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Payment Method</Text>
+          <View style={styles.paymentMethod}>
+            <View style={styles.paymentLeft}>
+              <View style={styles.paymentIcon}>
+                <Ionicons
+                  name="card-outline"
+                  size={24}
+                  color={COLORS.primaryColor}
+                />
+              </View>
+
+              <View>
+                <Text style={styles.paymentTitle}>Paystack</Text>
+                <Text style={styles.paymentDescription}>
+                  Pay securely with your card
+                </Text>
+              </View>
+            </View>
+
+            <Ionicons
+              name="checkmark-circle"
+              size={24}
+              color={COLORS.primaryColor}
+            />
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Payment Summary</Text>
           <View style={styles.summary}>
             <View style={styles.summaryRow}>
-              <Text style={styles.summaryText}>Items ({cartItems.length})</Text>
+              <Text style={styles.summaryText}>Subtotal</Text>
               <Text style={styles.summaryText}>
                 ₦{subtotal.toLocaleString()}
               </Text>
@@ -85,93 +128,36 @@ export default function Checkout() {
             </View>
 
             <View style={styles.divider} />
+
             <View style={styles.summaryRow}>
               <Text style={styles.totalText}>Total</Text>
               <Text style={styles.totalText}>₦{total.toLocaleString()}</Text>
             </View>
           </View>
         </View>
-
-        {/* Payment Method */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Payment Method</Text>
-
-          <TouchableOpacity
-            style={[
-              styles.paymentOption,
-              paymentMethod === "card" && styles.selectedPayment,
-            ]}
-            onPress={() => setPaymentMethod("card")}
-          >
-            <View style={styles.paymentLeft}>
-              <Ionicons
-                name="card-outline"
-                size={24}
-                color={COLORS.secondaryColor}
-              />
-
-              <Text style={styles.paymentText}>Debit / Credit Card</Text>
-            </View>
-            <Ionicons
-              name={
-                paymentMethod === "card"
-                  ? "radio-button-on"
-                  : "radio-button-off"
-              }
-              size={22}
-              color={COLORS.secondaryColor}
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.paymentOption,
-              paymentMethod === "transfer" && styles.selectedPayment,
-            ]}
-            onPress={() => setPaymentMethod("transfer")}
-          >
-            <View style={styles.paymentLeft}>
-              <Ionicons
-                name="business-outline"
-                size={24}
-                color={COLORS.secondaryColor}
-              />
-
-              <Text style={styles.paymentText}>Bank Transfer</Text>
-            </View>
-
-            <Ionicons
-              name={
-                paymentMethod === "transfer"
-                  ? "radio-button-on"
-                  : "radio-button-off"
-              }
-              size={22}
-              color={COLORS.secondaryColor}
-            />
-          </TouchableOpacity>
-        </View>
       </ScrollView>
 
-      {/* Bottom Button */}
-      <Button
-        title={`Place Order • ₦${total.toLocaleString()}`}
-        style={styles.placeOrderButton}
-      />
+      <View style={styles.bottomBar}>
+        <Button
+          title={`Pay ₦${total.toLocaleString()}`}
+          onPress={handlePayment}
+        />
+      </View>
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.bgColor,
-    paddingHorizontal: wp("5%"),
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: wp("4%"),
+    justifyContent: "space-between",
+    paddingHorizontal: wp("5%"),
+    paddingVertical: wp("3%"),
   },
   headerTitle: {
     fontFamily: "BricolageGrotesque-SemiBold",
@@ -179,37 +165,29 @@ const styles = StyleSheet.create({
     color: COLORS.textColor,
   },
   content: {
-    paddingTop: wp("4%"),
-    paddingBottom: wp("8%"),
+    paddingHorizontal: wp("5%"),
+    paddingBottom: wp("30%"),
     gap: wp("7%"),
   },
   section: {
     gap: wp("3%"),
   },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   sectionTitle: {
-    fontFamily: "BricolageGrotesque-SemiBold",
-    fontSize: 18,
+    fontFamily: "Manrope-SemiBold",
+    fontSize: 17,
     color: COLORS.textColor,
   },
   addressCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: wp("3%"),
     backgroundColor: "white",
+    borderRadius: wp("3%"),
     padding: wp("4%"),
-    borderRadius: wp("4%"),
-  },
-  addressIcon: {
-    width: wp("11%"),
-    height: wp("11%"),
-    borderRadius: wp("5.5%"),
-    backgroundColor: COLORS.bgColor,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  addressContent: {
-    flex: 1,
     gap: wp("1%"),
+    elevation: 1,
   },
   addressTitle: {
     fontFamily: "Manrope-SemiBold",
@@ -219,13 +197,69 @@ const styles = StyleSheet.create({
   addressText: {
     fontFamily: "Manrope-Regular",
     fontSize: 13,
-    color: COLORS.primaryColor,
-    lineHeight: 20,
+    color: COLORS.secondaryColor,
   },
-  summary: {
+  orderList: {
+    gap: wp("3%"),
+  },
+  orderItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  orderItemInfo: {
+    flex: 1,
+    marginRight: wp("4%"),
+  },
+  orderItemName: {
+    fontFamily: "Manrope-SemiBold",
+    fontSize: 14,
+    color: COLORS.textColor,
+  },
+  orderItemQuantity: {
+    marginTop: wp("1%"),
+    fontFamily: "Manrope-Regular",
+    fontSize: 12,
+    color: COLORS.secondaryColor,
+  },
+  orderItemPrice: {
+    fontFamily: "Manrope-SemiBold",
+    fontSize: 14,
+    color: COLORS.textColor,
+  },
+  paymentMethod: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     backgroundColor: "white",
     padding: wp("4%"),
-    borderRadius: wp("4%"),
+    borderRadius: wp("3%"),
+    elevation: 1,
+  },
+  paymentLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: wp("3%"),
+  },
+  paymentIcon: {
+    width: 45,
+    height: 45,
+    borderRadius: 12,
+    backgroundColor: `${COLORS.primaryColor}15`,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  paymentTitle: {
+    fontFamily: "Manrope-SemiBold",
+    fontSize: 15,
+    color: COLORS.textColor,
+  },
+  paymentDescription: {
+    fontFamily: "Manrope-Regular",
+    fontSize: 12,
+    color: COLORS.secondaryColor,
+  },
+  summary: {
     gap: wp("3%"),
   },
   summaryRow: {
@@ -234,8 +268,8 @@ const styles = StyleSheet.create({
   },
   summaryText: {
     fontFamily: "Manrope-Regular",
-    fontSize: 15,
-    color: COLORS.textColor,
+    fontSize: 14,
+    color: COLORS.secondaryColor,
   },
   divider: {
     height: 1,
@@ -243,32 +277,18 @@ const styles = StyleSheet.create({
   },
   totalText: {
     fontFamily: "Manrope-SemiBold",
-    fontSize: 18,
+    fontSize: 17,
     color: COLORS.textColor,
   },
-  paymentOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: wp("4%"),
-    borderWidth: 1,
-    borderColor: "#E5E5E5",
-    borderRadius: wp("4%"),
-  },
-  selectedPayment: {
-    borderColor: COLORS.secondaryColor,
-  },
-  paymentLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: wp("4%"),
-  },
-  paymentText: {
-    fontFamily: "Manrope-SemiBold",
-    fontSize: 15,
-    color: COLORS.textColor,
-  },
-  placeOrderButton: {
-    marginBottom: wp("4%"),
+  bottomBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: wp("5%"),
+    paddingVertical: wp("4%"),
+    backgroundColor: COLORS.bgColor,
+    borderTopWidth: 1,
+    borderTopColor: "#EEE",
   },
 });
