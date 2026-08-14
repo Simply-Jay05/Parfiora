@@ -1,19 +1,24 @@
 import BackButton from "@/components/ui/BackButton";
 import Button from "@/components/ui/Button";
 import { useCart } from "@/context/CartContext";
+import { useOrders } from "@/context/OrderContext";
 import { AppNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type CheckoutType = NavigationProp<AppNav, "Checkout">;
+type CheckoutNavigationProp = NativeStackNavigationProp<AppNav, "Checkout">;
 
 export default function Checkout() {
-  const navigation = useNavigation<CheckoutType>();
-  const { cartItems } = useCart();
+  const navigation = useNavigation<CheckoutNavigationProp>();
+  const { cartItems, clearCart } = useCart();
+  const { createOrder } = useOrders();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -24,8 +29,19 @@ export default function Checkout() {
   const total = subtotal + deliveryFee;
 
   const handlePayment = () => {
-    // Paystack payment logic will go here
-    navigation.navigate("OrderSuccess");
+    if (cartItems.length === 0) {
+      return;
+    }
+    setIsProcessing(true);
+    createOrder({
+      items: cartItems,
+      subtotal,
+      deliveryFee,
+      total,
+      status: "Pending",
+    });
+    clearCart();
+    navigation.replace("OrderSuccess");
   };
 
   return (
