@@ -3,6 +3,7 @@ export type AppNav = {
   Explore: undefined;
   Orders: undefined;
   Account: undefined;
+  ProductDetails: undefined;
   MyOrders: undefined;
   EditProfile: undefined;
   Favourites: undefined;
