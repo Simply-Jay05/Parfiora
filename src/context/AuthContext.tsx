@@ -6,7 +6,13 @@ import {
   signOut,
   User,
 } from "firebase/auth";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import {
   createContext,
   ReactNode,
@@ -15,8 +21,19 @@ import {
   useState,
 } from "react";
 
+export type UserProfile = {
+  uid: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string | null;
+  profileImage: string | null;
+};
+
 type AuthContextType = {
   user: User | null;
+  profile: UserProfile | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (
@@ -25,7 +42,12 @@ type AuthContextType = {
     email: string,
     password: string,
   ) => Promise<void>;
-  signout: () => Promise<void>;
+  logout: () => Promise<void>;
+  updateProfile: (data: {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+  }) => Promise<void>;
 };
 
 interface AuthProviderProps {
@@ -36,11 +58,23 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
+
+      if (firebaseUser) {
+        try {
+          await getUserProfile(firebaseUser.uid);
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+          setProfile(null);
+        }
+      } else {
+        setProfile(null);
+      }
       setIsLoading(false);
     });
 
@@ -94,6 +128,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         updatedAt: serverTimestamp(),
       });
 
+      setProfile({
+        uid: user.uid,
+        firstName,
+        lastName,
+        fullName: `${firstName} ${lastName}`,
+        email: user.email ?? email,
+        phoneNumber: null,
+        profileImage: null,
+      });
+
       setUser(user);
       console.log(user);
     } catch (error) {
@@ -104,12 +148,60 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const signout = async () => {
+  const getUserProfile = async (uid: string) => {
+    const userRef = doc(db, "user", uid);
+
+    const userSnapshot = await getDoc(userRef);
+
+    if (userSnapshot.exists()) {
+      setProfile(userSnapshot.data() as UserProfile);
+    } else {
+      setProfile(null);
+    }
+  };
+
+  const updateProfile = async ({
+    firstName,
+    lastName,
+    phoneNumber,
+  }: {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+  }) => {
+    if (!user) {
+      throw new Error("No authenticated user");
+    }
+
+    const fullName = `${firstName} ${lastName}`;
+    const userRef = doc(db, "user", user.uid);
+    await updateDoc(userRef, {
+      firstName,
+      lastName,
+      fullName,
+      phoneNumber: phoneNumber || null,
+      updatedAt: serverTimestamp(),
+    });
+    setProfile((currentProfile) => {
+      if (!currentProfile) return currentProfile;
+      return {
+        ...currentProfile,
+        firstName,
+        lastName,
+        fullName,
+        phoneNumber: phoneNumber || null,
+      };
+    });
+  };
+
+  const logout = async () => {
     await signOut(auth);
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, signup, signout }}>
+    <AuthContext.Provider
+      value={{ user, profile, isLoading, login, signup, logout, updateProfile }}
+    >
       {children}
     </AuthContext.Provider>
   );

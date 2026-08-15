@@ -1,5 +1,4 @@
 import { useAuth } from "@/context/AuthContext";
-import { homeUser } from "@/data/dummyData";
 import { AppNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,13 +6,11 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 
-type HomeType = NavigationProp<AppNav, "Home">;
+type HomeType = NavigationProp<AppNav, "Main">;
 
 export default function HomeHeader() {
-  const { signout } = useAuth();
-  const handleSubmit = () => {
-    signout();
-  };
+  const { profile } = useAuth();
+  const fullName = profile?.fullName || "Parfiora User";
   const navigation = useNavigation<HomeType>();
   return (
     <View style={styles.container}>
@@ -27,7 +24,7 @@ export default function HomeHeader() {
         <View>
           <Text style={styles.greeting}>Good Morning!</Text>
 
-          <Text style={styles.name}>{homeUser.name}</Text>
+          <Text style={styles.name}>{fullName}</Text>
         </View>
       </View>
 
