@@ -17,7 +17,7 @@ export default function App() {
     "Manrope-SemiBold": require("./assets/fonts/Manrope-SemiBold.ttf"),
     "Caveat-Regular": require("./assets/fonts/Caveat-Regular.ttf"),
   });
-  -useEffect(() => {
+  useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
     }

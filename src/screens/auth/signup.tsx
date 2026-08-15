@@ -51,7 +51,7 @@ export default function Signup() {
       passwordConfirmation: "",
     },
     onSubmit: () => {
-      signup(values.email, values.password);
+      signup(values.firstName, values.lastName, values.email, values.password);
     },
     validationSchema: signupValidationSchema,
     validateOnMount: true,

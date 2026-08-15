@@ -1,4 +1,4 @@
-import { auth } from "@/config/firebase";
+import { auth, db } from "@/config/firebase";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -6,6 +6,7 @@ import {
   signOut,
   User,
 } from "firebase/auth";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import {
   createContext,
   ReactNode,
@@ -18,7 +19,12 @@ type AuthContextType = {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string) => Promise<void>;
+  signup: (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+  ) => Promise<void>;
   signout: () => Promise<void>;
 };
 
@@ -41,10 +47,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return unsubscribe;
   }, []);
 
-  const login = async (emaii: string, password: string) => {
+  const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const result = await signInWithEmailAndPassword(auth, emaii, password);
+      const result = await signInWithEmailAndPassword(auth, email, password);
       if (!result) {
         alert("User is undefined");
       }
@@ -56,21 +62,44 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const signup = async (emaii: string, password: string) => {
+  const signup = async (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+  ) => {
     setIsLoading(true);
     try {
       const result = await createUserWithEmailAndPassword(
         auth,
-        emaii,
+        email,
         password,
       );
       if (!result) {
         alert("User is undefined");
       }
-      setUser(result.user);
-      setIsLoading(false);
+
+      const user = result.user;
+
+      const userRef = doc(db, "user", user.uid);
+      await setDoc(userRef, {
+        uid: user.uid,
+        firstName,
+        lastName,
+        fullName: `${firstName} ${lastName}`,
+        email: user.email,
+        phoneNumber: null,
+        profileImage: null,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      setUser(user);
+      console.log(user);
     } catch (error) {
       console.error("Error on signing up: ", error);
+      setIsLoading(false);
+    } finally {
       setIsLoading(false);
     }
   };
