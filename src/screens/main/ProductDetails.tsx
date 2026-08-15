@@ -5,21 +5,21 @@ import { AppNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { Ionicons } from "@expo/vector-icons";
 import {
-    NavigationProp,
-    RouteProp,
-    useNavigation,
-    useRoute,
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
 } from "@react-navigation/native";
 import { useState } from "react";
 import {
-    Alert,
-    Image,
-    ImageSourcePropType,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  ImageSourcePropType,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -62,7 +62,7 @@ export default function ProductDetails() {
     addToCart({
       id,
       name,
-      price,
+      price: unitPrice,
       image,
       quantity,
       size: selectedSize,
@@ -109,6 +109,7 @@ export default function ProductDetails() {
     const extra = extras.find((item) => item.name === extraName);
     return total + (extra?.price ?? 0);
   }, 0);
+  const unitPrice = basePrice + extrasTotal;
   const totalPrice = (basePrice + extrasTotal) * quantity;
 
   return (

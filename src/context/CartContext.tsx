@@ -2,15 +2,23 @@ import { createContext, ReactNode, useContext, useState } from "react";
 import { ImageSourcePropType } from "react-native";
 
 type CartItem = CartProduct & {
+  id: string;
+  name: string;
+  price: number;
+  image: ImageSourcePropType;
   quantity: number;
+  size?: string;
+  base?: string;
+  toppings?: string[];
+  extras?: string[];
 };
 
 type CartProduct = {
   id: string;
   name: string;
   price: number;
+  quantity: number;
   image: ImageSourcePropType;
-  quantity?: number;
   size?: string;
   base?: string;
   toppings?: string[];

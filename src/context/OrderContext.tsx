@@ -5,6 +5,7 @@ type OrderItem = {
   id: string;
   name: string;
   price: number;
+  quantity: number;
   image: ImageSourcePropType;
   size?: string;
   base?: string;
