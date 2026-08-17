@@ -1,6 +1,8 @@
 import BackButton from "@/components/ui/BackButton";
 import Button from "@/components/ui/Button";
 import { useCart } from "@/context/CartContext";
+import { getProductById } from "@/services/productService";
+import { Product } from "@/types/product";
 import { AppNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -10,14 +12,15 @@ import {
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Image,
-  ImageSourcePropType,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -27,9 +30,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 type ProductDetailsParams = {
   ProductDetails: {
     id: string;
-    name: string;
-    price: number;
-    image: ImageSourcePropType;
   };
 };
 type ProductDetailsType = NavigationProp<AppNav, "ProductDetails">;
@@ -56,35 +56,35 @@ const extras = [
 export default function ProductDetails() {
   const navigation = useNavigation<ProductDetailsType>();
   const route = useRoute<RouteProp<ProductDetailsParams, "ProductDetails">>();
-  const { id, name, price, image } = route.params;
+
+  const { id } = route.params;
   const { addToCart } = useCart();
-  const handleAddToCart = () => {
-    addToCart({
-      id,
-      name,
-      price: unitPrice,
-      image,
-      quantity,
-      size: selectedSize,
-      base: selectedBase,
-      toppings: selectedToppings,
-      extras: selectedExtras,
-    });
 
-    Alert.alert("Added to Cart", `${name} has been added to your cart.`, [
-      { text: "Continue Shopping", style: "cancel" },
-      {
-        text: "View Cart",
-        onPress: () => navigation.navigate("Main", { screen: "Orders" }),
-      },
-    ]);
-  };
-
+  const [product, setProduct] = useState<Product | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("Medium");
   const [selectedBase, setSelectedBase] = useState("Greek Yogurt");
   const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
+  const [specialInstructions, setSpecialInstructions] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const data = await getProductById(id);
+
+        setProduct(data);
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   const toggleTopping = (topping: string) => {
     setSelectedToppings((current) => {
@@ -94,6 +94,7 @@ export default function ProductDetails() {
       return [...current, topping];
     });
   };
+
   const toggleExtras = (extra: string) => {
     setSelectedExtras((current) => {
       if (current.includes(extra)) {
@@ -103,22 +104,74 @@ export default function ProductDetails() {
     });
   };
 
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={COLORS.primaryColor} />
+      </SafeAreaView>
+    );
+  }
+
+  if (!product) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <Text style={styles.errorText}>Product not found.</Text>
+      </SafeAreaView>
+    );
+  }
+
   const selectedSizeData = sizes.find((size) => size.name === selectedSize);
-  const basePrice = selectedSizeData?.price ?? price;
+  const basePrice = selectedSizeData?.price ?? product.price;
   const extrasTotal = selectedExtras.reduce((total, extraName) => {
     const extra = extras.find((item) => item.name === extraName);
     return total + (extra?.price ?? 0);
   }, 0);
   const unitPrice = basePrice + extrasTotal;
-  const totalPrice = (basePrice + extrasTotal) * quantity;
+  const totalPrice = unitPrice * quantity;
+
+  const handleAddToCart = () => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: unitPrice,
+      image: product.image,
+      quantity,
+      size: selectedSize,
+      base: selectedBase,
+      toppings: selectedToppings,
+      extras: selectedExtras,
+      specialInstructions,
+    });
+
+    Alert.alert(
+      "Added to Cart",
+      `${product.name} has been added to your cart.`,
+      [
+        {
+          text: "Continue Shopping",
+          style: "cancel",
+        },
+        {
+          text: "View Cart",
+          onPress: () =>
+            navigation.navigate("Main", {
+              screen: "Orders",
+            }),
+        },
+      ],
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <BackButton />
-        <TouchableOpacity style={styles.favoriteBtn}>
+        <TouchableOpacity
+          style={styles.favoriteBtn}
+          onPress={() => setIsFavorite((current) => !current)}
+        >
           <Ionicons
-            name="heart-outline"
+            name={isFavorite ? "heart" : "heart-outline"}
             size={24}
             color={COLORS.secondaryColor}
           />
@@ -130,18 +183,15 @@ export default function ProductDetails() {
         contentContainerStyle={styles.content}
       >
         <View style={styles.imageView}>
-          <Image source={image} style={styles.image} />
+          <Image source={{ uri: product.image }} style={styles.image} />
         </View>
 
         <View style={styles.productInfo}>
           <View>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.description}>
-              Creamy yogurt layered with fresh berries, crunchy granola, and a
-              touch of honey.
-            </Text>
+            <Text style={styles.name}>{product.name}</Text>
+            <Text style={styles.description}>{product.description}</Text>
           </View>
-          <Text style={styles.price}>₦{price.toLocaleString()}</Text>
+          <Text style={styles.price}>₦{product.price.toLocaleString()}</Text>
         </View>
 
         {/* Quantity */}
@@ -298,6 +348,17 @@ export default function ProductDetails() {
           <Text style={styles.optional}>
             Add any special request for this order
           </Text>
+
+          <TextInput
+            style={styles.instructionsInput}
+            placeholder="e.g. Please add extra strawberries..."
+            placeholderTextColor="#999"
+            multiline
+            numberOfLines={4}
+            value={specialInstructions}
+            onChangeText={setSpecialInstructions}
+            textAlignVertical="top"
+          />
         </View>
       </ScrollView>
 
@@ -503,5 +564,27 @@ const styles = StyleSheet.create({
   },
   addButton: {
     width: wp("48%"),
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: COLORS.bgColor,
+  },
+  errorText: {
+    fontFamily: "Manrope-SemiBold",
+    fontSize: 16,
+    color: COLORS.textColor,
+  },
+  instructionsInput: {
+    minHeight: wp("25%"),
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#E5E5E5",
+    borderRadius: wp("3%"),
+    padding: wp("4%"),
+    fontFamily: "Manrope-Regular",
+    fontSize: 14,
+    color: COLORS.textColor,
   },
 });

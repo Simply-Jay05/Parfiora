@@ -16,11 +16,11 @@ export type AppNav = {
   SavedLocations: undefined;
   Notifications: undefined;
   OrderDetails: {
-    // We'll add the actual order data later
     orderId: string;
   };
   Checkout: undefined;
   OrderSuccess: undefined;
+  SeedProducts: undefined;
 };
 
 export type AuthNav = {

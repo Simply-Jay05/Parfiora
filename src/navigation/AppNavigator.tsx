@@ -7,6 +7,7 @@ import OrderDetails from "@/screens/main/OrderDetails";
 import OrderSuccess from "@/screens/main/OrderSuccess";
 import ProductDetails from "@/screens/main/ProductDetails";
 import SavedLocations from "@/screens/main/SavedLocations";
+import SeedProducts from "@/screens/main/SeedProducts";
 import Settings from "@/screens/main/Settings";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TabNavigator from "./TabNavigator";
@@ -27,6 +28,7 @@ export default function AppNavigator() {
       <AppStack.Screen name="Settings" component={Settings} />
       <AppStack.Screen name="SavedLocations" component={SavedLocations} />
       <AppStack.Screen name="Notifications" component={Notifications} />
+      <AppStack.Screen name="SeedProducts" component={SeedProducts} />
     </AppStack.Navigator>
   );
 }

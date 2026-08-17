@@ -1,12 +1,14 @@
 import EmptyProducts from "@/components/explore/EmptyProducts";
 import ProductCard from "@/components/home/ProductCard";
-import { popularMenu } from "@/data/dummyData";
+import { getProducts } from "@/services/productService";
+import { Product } from "@/types/product";
 import { TabNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
@@ -25,6 +27,8 @@ export default function Explore() {
   const [selectedCategory, setSelectedCategory] = useState(
     route.params?.category ?? "All",
   );
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (route.params?.category) {
@@ -32,16 +36,23 @@ export default function Explore() {
     }
   }, [route.params?.category]);
 
-  const categories = [
-    "All",
-    "Classic",
-    "Fruit",
-    "Chocolate",
-    "Tropical",
-    "Special",
-  ];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getProducts();
+        setProducts(data);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
-  const filterredProducts = popularMenu.filter((product) => {
+  const categories = ["All", "Classic", "Fruit", "Chocolate", "Tropical"];
+
+  const filteredProducts = products.filter((product) => {
     const matchesCategory =
       selectedCategory === "All" || product.category === selectedCategory;
     const matchesSearch = product.name
@@ -97,11 +108,19 @@ export default function Explore() {
       </View>
 
       {/* products */}
-      {filterredProducts.length > 0 ? (
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.primaryColor} />
+
+          <Text style={styles.loadingText}>Loading parfaits...</Text>
+        </View>
+      ) : (
         <FlatList
-          data={filterredProducts}
+          data={filteredProducts}
           numColumns={2}
-          columnWrapperStyle={styles.row}
+          columnWrapperStyle={
+            filteredProducts.length > 0 ? styles.row : undefined
+          }
           contentContainerStyle={styles.products}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item) => item.id}
@@ -113,9 +132,10 @@ export default function Explore() {
               image={item.image}
             />
           )}
+          ListEmptyComponent={
+            <EmptyProducts search={search} category={selectedCategory} />
+          }
         />
-      ) : (
-        <EmptyProducts search={search} category={selectedCategory} />
       )}
     </SafeAreaView>
   );
@@ -185,5 +205,16 @@ const styles = StyleSheet.create({
   row: {
     justifyContent: "space-between",
     marginBottom: wp("5%"),
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: wp("3%"),
+  },
+  loadingText: {
+    fontFamily: "Manrope-SemiBold",
+    fontSize: 15,
+    color: COLORS.secondaryColor,
   },
 });

@@ -4,9 +4,14 @@
     "slug": "Parfiora",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/Parfiora-icon.png",
     "scheme": "parfiora",
     "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/Parfiora-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#fbf3e7"
+    },
     "ios": {
       "icon": "./assets/expo.icon"
     },
@@ -32,7 +37,8 @@
           "imageWidth": 76
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-asset"
     ],
     "experiments": {
       "reactCompiler": true

@@ -68,7 +68,7 @@ export default function Orders() {
         <View style={styles.list}>
           {cartItems.map((item) => (
             <CartItem
-              key={`${item.id}-${item.size}-${item.base}-${item.toppings?.join("-")}`}
+              key={`${item.id}-${item.size}-${item.base}-${item.toppings?.join("-")}-${item.extras?.join("-")}-${item.specialInstructions}`}
               id={item.id}
               name={item.name}
               price={item.price}
@@ -78,6 +78,7 @@ export default function Orders() {
               base={item.base}
               toppings={item.toppings}
               extras={item.extras}
+              specialInstructions={item.specialInstructions}
               onDelete={() => removeFromCart(item)}
               onIncrease={() => updateQuantity(item, "increase")}
               onDecrease={() => updateQuantity(item, "decrease")}

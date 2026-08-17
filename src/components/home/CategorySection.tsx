@@ -1,19 +1,25 @@
 import { categories } from "@/data/dummyData";
-import { TabNav } from "@/types/types";
+import { AppNav, TabNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { useNavigation } from "@react-navigation/native";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import CategoryCard from "./CategoryCard";
 
-type CategoryNavigationProp = BottomTabNavigationProp<TabNav, "Home">;
+type CategoryNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<TabNav, "Home">,
+  NativeStackNavigationProp<AppNav>
+>;
 
 export default function CategorySection() {
   const navigation = useNavigation<CategoryNavigationProp>();
@@ -22,9 +28,7 @@ export default function CategorySection() {
       <View style={styles.header}>
         <Text style={styles.title}>Categories</Text>
 
-        <TouchableOpacity>
-          <Text style={styles.viewAll}>View All</Text>
-        </TouchableOpacity>
+        <View style={{ width: wp("10%") }}></View>
       </View>
 
       <ScrollView

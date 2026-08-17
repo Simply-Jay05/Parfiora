@@ -1,28 +1,20 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { ImageSourcePropType } from "react-native";
-
-type CartItem = CartProduct & {
-  id: string;
-  name: string;
-  price: number;
-  image: ImageSourcePropType;
-  quantity: number;
-  size?: string;
-  base?: string;
-  toppings?: string[];
-  extras?: string[];
-};
 
 type CartProduct = {
   id: string;
   name: string;
   price: number;
   quantity: number;
-  image: ImageSourcePropType;
+  image: string;
   size?: string;
   base?: string;
   toppings?: string[];
   extras?: string[];
+  specialInstructions?: string;
+};
+
+type CartItem = CartProduct & {
+  quantity: number;
 };
 
 type CartContextType = {
@@ -44,30 +36,33 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
   const addToCart = (product: CartProduct) => {
     setCartItems((currentItems) => {
-      // Check if the product is already in the cart
       const existingItem = currentItems.find(
         (item) =>
           item.id === product.id &&
           item.size === product.size &&
           item.base === product.base &&
           JSON.stringify(item.toppings) === JSON.stringify(product.toppings) &&
-          JSON.stringify(item.extras) === JSON.stringify(product.extras),
+          JSON.stringify(item.extras) === JSON.stringify(product.extras) &&
+          item.specialInstructions === product.specialInstructions,
       );
 
-      // If it already exists, increase its quantity
       if (existingItem) {
-        return currentItems.map((item) =>
-          item.id === existingItem.id &&
-          item.size === existingItem.size &&
-          item.base === existingItem.base &&
-          JSON.stringify(item.toppings) ===
-            JSON.stringify(existingItem.toppings) &&
-          JSON.stringify(item.extras) === JSON.stringify(existingItem.extras)
-            ? { ...item, quantity: item.quantity + 1 }
-            : item,
-        );
+        return currentItems.map((item) => {
+          const isSameItem =
+            item.id === product.id &&
+            item.size === product.size &&
+            item.base === product.base &&
+            JSON.stringify(item.toppings) ===
+              JSON.stringify(product.toppings) &&
+            JSON.stringify(item.extras) === JSON.stringify(product.extras) &&
+            item.specialInstructions === product.specialInstructions;
+
+          return isSameItem
+            ? { ...item, quantity: item.quantity + product.quantity }
+            : item;
+        });
       }
-      // Otherwise, add it as a new item
+
       return [...currentItems, { ...product, quantity: product.quantity ?? 1 }];
     });
   };
@@ -82,7 +77,9 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             item.base === itemToRemove.base &&
             JSON.stringify(item.toppings) ===
               JSON.stringify(itemToRemove.toppings) &&
-            JSON.stringify(item.extras) === JSON.stringify(itemToRemove.extras)
+            JSON.stringify(item.extras) ===
+              JSON.stringify(itemToRemove.extras) &&
+            item.specialInstructions === itemToRemove.specialInstructions
           ),
       ),
     );
@@ -100,7 +97,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
           item.base === itemToUpdate.base &&
           JSON.stringify(item.toppings) ===
             JSON.stringify(itemToUpdate.toppings) &&
-          JSON.stringify(item.extras) === JSON.stringify(itemToUpdate.extras);
+          JSON.stringify(item.extras) === JSON.stringify(itemToUpdate.extras) &&
+          item.specialInstructions === itemToUpdate.specialInstructions;
 
         if (!isSameItem) {
           return item;

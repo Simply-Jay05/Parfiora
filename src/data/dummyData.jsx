@@ -20,10 +20,6 @@ export const categories = [
     name: "Classic",
     image: require("../../assets/images/categories/classic-category.png"),
   },
-  {
-    name: "Special",
-    image: require("../../assets/images/categories/special-category.png"),
-  },
 ];
 
 export const nearbyShops = [

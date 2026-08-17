@@ -1,25 +1,18 @@
 import { AppNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import {
-  Image,
-  ImageSourcePropType,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 
 type ProductCardProps = {
   id: string;
   name: string;
   price: number;
-  image: ImageSourcePropType;
+  image: string;
   showFavorite?: boolean;
 };
 
-type ProduCardType = NavigationProp<AppNav, "ProductDetails">;
+type ProductCardNavigationProp = NavigationProp<AppNav, "ProductDetails">;
 
 export default function ProductCard({
   id,
@@ -27,21 +20,14 @@ export default function ProductCard({
   price,
   image,
 }: ProductCardProps) {
-  const navigation = useNavigation<ProduCardType>();
+  const navigation = useNavigation<ProductCardNavigationProp>();
   return (
     <View style={styles.card}>
       <TouchableOpacity
-        onPress={() =>
-          navigation.navigate("ProductDetails", {
-            id,
-            name,
-            price,
-            image,
-          } as never)
-        }
+        onPress={() => navigation.navigate("ProductDetails", { id } as never)}
       >
         <View style={styles.imgView}>
-          <Image style={styles.img} source={image} />
+          <Image style={styles.img} source={{ uri: image }} />
         </View>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.price}>₦{price.toLocaleString()}</Text>

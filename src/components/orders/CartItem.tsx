@@ -13,6 +13,7 @@ type CartItemProps = {
   base?: string;
   toppings?: string[];
   extras?: string[];
+  specialInstructions?: string;
   onDelete?: () => void;
   onIncrease?: () => void;
   onDecrease?: () => void;
@@ -34,7 +35,7 @@ export default function CartItem({
 }: CartItemProps) {
   return (
     <View style={styles.container}>
-      <Image source={image} style={styles.image} />
+      <Image source={{ uri: image }} style={styles.image} />
 
       <View style={styles.content}>
         <View style={styles.topView}>
