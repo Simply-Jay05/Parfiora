@@ -1,8 +1,11 @@
+import EmptyProducts from "@/components/explore/EmptyProducts";
 import ProductCard from "@/components/home/ProductCard";
 import { popularMenu } from "@/data/dummyData";
+import { TabNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -14,11 +17,39 @@ import {
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function Explore() {
-  const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+type ExploreRouteProp = RouteProp<TabNav, "Explore">;
 
-  const categories = ["All", "Classic", "Fruit", "Chocolate", "Tropical"];
+export default function Explore() {
+  const route = useRoute<ExploreRouteProp>();
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(
+    route.params?.category ?? "All",
+  );
+
+  useEffect(() => {
+    if (route.params?.category) {
+      setSelectedCategory(route.params.category);
+    }
+  }, [route.params?.category]);
+
+  const categories = [
+    "All",
+    "Classic",
+    "Fruit",
+    "Chocolate",
+    "Tropical",
+    "Special",
+  ];
+
+  const filterredProducts = popularMenu.filter((product) => {
+    const matchesCategory =
+      selectedCategory === "All" || product.category === selectedCategory;
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Explore</Text>
@@ -66,22 +97,26 @@ export default function Explore() {
       </View>
 
       {/* products */}
-      <FlatList
-        data={popularMenu}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={styles.products}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <ProductCard
-            id={item.id}
-            name={item.name}
-            price={item.price}
-            image={item.image}
-          />
-        )}
-      />
+      {filterredProducts.length > 0 ? (
+        <FlatList
+          data={filterredProducts}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.products}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <ProductCard
+              id={item.id}
+              name={item.name}
+              price={item.price}
+              image={item.image}
+            />
+          )}
+        />
+      ) : (
+        <EmptyProducts search={search} category={selectedCategory} />
+      )}
     </SafeAreaView>
   );
 }

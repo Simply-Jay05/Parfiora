@@ -32,7 +32,7 @@ export type AuthNav = {
 
 export type TabNav = {
   Home: undefined;
-  Explore: undefined;
+  Explore: { category?: string } | undefined;
   Orders: undefined;
   Account: undefined;
 };

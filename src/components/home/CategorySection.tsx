@@ -1,5 +1,8 @@
 import { categories } from "@/data/dummyData";
+import { TabNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { useNavigation } from "@react-navigation/native";
 import {
   ScrollView,
   StyleSheet,
@@ -10,7 +13,10 @@ import {
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import CategoryCard from "./CategoryCard";
 
+type CategoryNavigationProp = BottomTabNavigationProp<TabNav, "Home">;
+
 export default function CategorySection() {
+  const navigation = useNavigation<CategoryNavigationProp>();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -31,6 +37,9 @@ export default function CategorySection() {
             key={category.name}
             name={category.name}
             image={category.image}
+            onPress={() =>
+              navigation.navigate("Explore", { category: category.name })
+            }
           />
         ))}
       </ScrollView>
