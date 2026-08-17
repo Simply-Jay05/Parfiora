@@ -1,13 +1,9 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
-import { ImageSourcePropType } from "react-native";
 
 export type AppNav = {
   Main: NavigatorScreenParams<TabNav>;
   ProductDetails: {
     id: string;
-    name: string;
-    price: number;
-    image: ImageSourcePropType;
   };
   MyOrders: undefined;
   EditProfile: undefined;

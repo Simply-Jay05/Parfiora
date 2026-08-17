@@ -29,6 +29,7 @@ export default function CartItem({
   base,
   toppings,
   extras,
+  specialInstructions,
   onDelete,
   onIncrease,
   onDecrease,
@@ -59,6 +60,12 @@ export default function CartItem({
             {extras && extras.length > 0 && (
               <Text style={styles.customization} numberOfLines={2}>
                 + {extras.join(", ")}
+              </Text>
+            )}
+
+            {!!specialInstructions && (
+              <Text style={styles.customization} numberOfLines={2}>
+                Note: {specialInstructions}
               </Text>
             )}
 

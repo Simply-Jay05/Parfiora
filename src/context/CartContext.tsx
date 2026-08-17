@@ -1,4 +1,13 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { getUserCart, saveUserCart } from "@/services/cartService";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 type CartProduct = {
   id: string;
@@ -19,6 +28,8 @@ type CartItem = CartProduct & {
 
 type CartContextType = {
   cartItems: CartItem[];
+  isCartLoading: boolean;
+  cartError: string | null;
   addToCart: (product: CartProduct) => void;
   removeFromCart: (item: CartItem) => void;
   updateQuantity: (item: CartItem, type: "increase" | "decrease") => void;
@@ -31,8 +42,81 @@ type CartProviderProps = {
   children: ReactNode;
 };
 
+const CART_SYNC_DEBOUNCE_MS = 600;
+
 export const CartProvider = ({ children }: CartProviderProps) => {
+  const { user } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [isCartLoading, setIsCartLoading] = useState(false);
+  const [cartError, setCartError] = useState<string | null>(null);
+
+  const hydratedForUid = useRef<string | null>(null);
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Load this user's cart from Firestore whenever they log in/out.
+  useEffect(() => {
+    let isActive = true;
+
+    if (syncTimer.current) {
+      clearTimeout(syncTimer.current);
+      syncTimer.current = null;
+    }
+
+    if (!user) {
+      setCartItems([]);
+      hydratedForUid.current = null;
+      setCartError(null);
+      return;
+    }
+
+    setIsCartLoading(true);
+    setCartError(null);
+
+    getUserCart(user.uid)
+      .then((items) => {
+        if (!isActive) return;
+        setCartItems(items);
+        hydratedForUid.current = user.uid;
+      })
+      .catch((error) => {
+        console.error("Failed to load cart:", error);
+        if (isActive) {
+          setCartError(
+            "We couldn't load your saved cart. Check your connection and try again.",
+          );
+        }
+      })
+      .finally(() => {
+        if (isActive) setIsCartLoading(false);
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (!user || hydratedForUid.current !== user.uid) {
+      return;
+    }
+
+    if (syncTimer.current) {
+      clearTimeout(syncTimer.current);
+    }
+
+    syncTimer.current = setTimeout(() => {
+      saveUserCart(user.uid, cartItems).catch((error) => {
+        console.error("Failed to sync cart:", error);
+        setCartError(
+          "Your cart couldn't be saved. It'll retry the next time you make a change.",
+        );
+      });
+    }, CART_SYNC_DEBOUNCE_MS);
+
+    return () => {
+      if (syncTimer.current) clearTimeout(syncTimer.current);
+    };
+  }, [cartItems, user]);
 
   const addToCart = (product: CartProduct) => {
     setCartItems((currentItems) => {
@@ -123,6 +207,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     <CartContext.Provider
       value={{
         cartItems,
+        isCartLoading,
+        cartError,
         addToCart,
         removeFromCart,
         updateQuantity,
@@ -138,7 +224,7 @@ export const useCart = () => {
   const context = useContext(CartContext);
 
   if (!context) {
-    throw new Error("usecCart must be used inside CartProvider");
+    throw new Error("useCart must be used inside CartProvider");
   }
 
   return context;

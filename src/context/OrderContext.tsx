@@ -1,16 +1,28 @@
-import { createContext, ReactNode, useContext, useState } from "react";
-import { ImageSourcePropType } from "react-native";
+import { useAuth } from "@/context/AuthContext";
+import {
+  createOrder as createOrderInFirestore,
+  OrderStatus,
+  subscribeToUserOrders,
+} from "@/services/orderService";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 type OrderItem = {
   id: string;
   name: string;
   price: number;
   quantity: number;
-  image: ImageSourcePropType;
+  image: string;
   size?: string;
   base?: string;
   toppings?: string[];
   extras?: string[];
+  specialInstructions?: string;
 };
 
 export type Order = {
@@ -19,13 +31,18 @@ export type Order = {
   subtotal: number;
   deliveryFee: number;
   total: number;
-  status: "Pending" | "Preparing" | "On the way" | "Deliverd";
+  status: OrderStatus;
+  paymentReference?: string;
   createdAt: string;
 };
 
+type NewOrderInput = Omit<Order, "id" | "createdAt">;
+
 type OrderContextType = {
   orders: Order[];
-  createOrder: (order: Omit<Order, "id" | "createdAt">) => void;
+  isOrdersLoading: boolean;
+  ordersError: string | null;
+  createOrder: (order: NewOrderInput) => Promise<string>;
 };
 
 type OrderProviderProp = {
@@ -35,20 +52,52 @@ type OrderProviderProp = {
 const orderContext = createContext<OrderContextType | undefined>(undefined);
 
 export const OrderProvider = ({ children }: OrderProviderProp) => {
+  const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [isOrdersLoading, setIsOrdersLoading] = useState(false);
+  const [ordersError, setOrdersError] = useState<string | null>(null);
 
-  const createOrder = (order: Omit<Order, "id" | "createdAt">) => {
-    const newOrder: Order = {
-      ...order,
-      id: `ORD-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-    };
+  useEffect(() => {
+    if (!user) {
+      setOrders([]);
+      setOrdersError(null);
+      return;
+    }
 
-    setOrders((currentOrders) => [newOrder, ...currentOrders]);
+    setIsOrdersLoading(true);
+    setOrdersError(null);
+
+    const unsubscribe = subscribeToUserOrders(
+      user.uid,
+      (firestoreOrders) => {
+        setOrders(firestoreOrders);
+        setIsOrdersLoading(false);
+      },
+      () => {
+        setOrdersError(
+          "We couldn't load your orders. Check your connection and try again.",
+        );
+        setIsOrdersLoading(false);
+      },
+    );
+
+    return unsubscribe;
+  }, [user]);
+
+  const createOrder = async (order: NewOrderInput): Promise<string> => {
+    if (!user) {
+      throw new Error("You must be signed in to place an order.");
+    }
+
+    // Local list updates automatically via the onSnapshot listener above
+    // once the write lands, so we just forward it to Firestore here.
+    return createOrderInFirestore(user.uid, order);
   };
 
   return (
-    <orderContext.Provider value={{ orders, createOrder }}>
+    <orderContext.Provider
+      value={{ orders, isOrdersLoading, ordersError, createOrder }}
+    >
       {children}
     </orderContext.Provider>
   );
@@ -57,7 +106,7 @@ export const OrderProvider = ({ children }: OrderProviderProp) => {
 export const useOrders = () => {
   const context = useContext(orderContext);
   if (!context) {
-    throw new Error("useOrders must be used inside an orderProvider");
+    throw new Error("useOrders must be used inside an OrderProvider");
   }
   return context;
 };

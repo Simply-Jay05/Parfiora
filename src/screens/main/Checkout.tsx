@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -28,20 +28,31 @@ export default function Checkout() {
   const deliveryFee = 1000;
   const total = subtotal + deliveryFee;
 
-  const handlePayment = () => {
-    if (cartItems.length === 0) {
+  const handlePayment = async () => {
+    if (cartItems.length === 0 || isProcessing) {
       return;
     }
+
     setIsProcessing(true);
-    createOrder({
-      items: cartItems,
-      subtotal,
-      deliveryFee,
-      total,
-      status: "Pending",
-    });
-    clearCart();
-    navigation.replace("OrderSuccess");
+    try {
+      await createOrder({
+        items: cartItems,
+        subtotal,
+        deliveryFee,
+        total,
+        status: "Pending",
+      });
+      clearCart();
+      navigation.replace("OrderSuccess");
+    } catch (error) {
+      console.error("Failed to place order:", error);
+      Alert.alert(
+        "Order failed",
+        "We couldn't place your order. Please check your internet connection and try again.",
+      );
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -155,8 +166,11 @@ export default function Checkout() {
 
       <View style={styles.bottomBar}>
         <Button
-          title={`Pay ₦${total.toLocaleString()}`}
+          title={
+            isProcessing ? "Processing..." : `Pay ₦${total.toLocaleString()}`
+          }
           onPress={handlePayment}
+          disabled={isProcessing || cartItems.length === 0}
         />
       </View>
     </SafeAreaView>

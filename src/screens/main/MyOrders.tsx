@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -18,7 +19,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 type MyOrdersNavigationProps = NativeStackNavigationProp<AppNav, "MyOrders">;
 
 export default function MyOrders() {
-  const { orders } = useOrders();
+  const { orders, isOrdersLoading, ordersError } = useOrders();
   const navigation = useNavigation<MyOrdersNavigationProps>();
 
   return (
@@ -31,7 +32,24 @@ export default function MyOrders() {
         <View style={{ width: 40 }} />
       </View>
 
-      {orders.length === 0 ? (
+      {isOrdersLoading ? (
+        <View style={styles.emptyContainer}>
+          <ActivityIndicator size="large" color={COLORS.primaryColor} />
+          <Text style={styles.emptyText}>Loading your orders...</Text>
+        </View>
+      ) : ordersError ? (
+        <View style={styles.emptyContainer}>
+          <View style={styles.emptyIcon}>
+            <Ionicons
+              name="cloud-offline-outline"
+              size={60}
+              color={COLORS.primaryColor}
+            />
+          </View>
+          <Text style={styles.emptyTitle}>Couldn&apos;t load orders</Text>
+          <Text style={styles.emptyText}>{ordersError}</Text>
+        </View>
+      ) : orders.length === 0 ? (
         <View style={styles.emptyContainer}>
           <View style={styles.emptyIcon}>
             <Ionicons
