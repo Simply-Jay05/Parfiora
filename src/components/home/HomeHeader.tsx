@@ -3,6 +3,7 @@ import { AppNav } from "@/types/types";
 import { COLORS } from "@/utils/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 
@@ -12,13 +13,20 @@ export default function HomeHeader() {
   const { profile } = useAuth();
   const fullName = profile?.fullName || "Parfiora User";
   const navigation = useNavigation<HomeType>();
+  const [profileImage, setProfileImage] = useState<string | null>(
+    profile?.profileImage ?? null,
+  );
   return (
     <View style={styles.container}>
       {/* User */}
       <View style={styles.userView}>
         <Image
           style={styles.profile}
-          source={require("../../../assets/images/profile-pic.png")}
+          source={
+            profileImage
+              ? { uri: profileImage }
+              : require("../../../assets/images/profile-pic.png")
+          }
         />
 
         <View>

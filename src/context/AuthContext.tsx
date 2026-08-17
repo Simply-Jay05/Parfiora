@@ -47,6 +47,7 @@ type AuthContextType = {
     firstName: string;
     lastName: string;
     phoneNumber: string;
+    profileImage: string | null;
   }) => Promise<void>;
 };
 
@@ -164,10 +165,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     firstName,
     lastName,
     phoneNumber,
+    profileImage,
   }: {
     firstName: string;
     lastName: string;
     phoneNumber: string;
+    profileImage: string | null;
   }) => {
     if (!user) {
       throw new Error("No authenticated user");
@@ -180,6 +183,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       lastName,
       fullName,
       phoneNumber: phoneNumber || null,
+      profileImage,
       updatedAt: serverTimestamp(),
     });
     setProfile((currentProfile) => {
@@ -190,6 +194,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         lastName,
         fullName,
         phoneNumber: phoneNumber || null,
+        profileImage,
       };
     });
   };
