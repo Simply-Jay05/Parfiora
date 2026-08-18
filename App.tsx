@@ -6,6 +6,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "react-native";
+import { PaystackProvider } from "react-native-paystack-webview";
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
@@ -30,12 +31,17 @@ export default function App() {
     <AuthProvider>
       <CartProvider>
         <OrderProvider>
-          <StatusBar
-            barStyle="dark-content"
-            backgroundColor="transparent"
-            translucent
-          ></StatusBar>
-          <RootNavigator />
+          <PaystackProvider
+            publicKey={process.env.EXPO_PUBLIC_PAYSTACK_PUBLIC_KEY ?? ""}
+            debug={true}
+          >
+            <StatusBar
+              barStyle="dark-content"
+              backgroundColor="transparent"
+              translucent
+            ></StatusBar>
+            <RootNavigator />
+          </PaystackProvider>
         </OrderProvider>
       </CartProvider>
     </AuthProvider>

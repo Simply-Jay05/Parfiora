@@ -1,5 +1,6 @@
 import BackButton from "@/components/ui/BackButton";
 import Button from "@/components/ui/Button";
+import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { useOrders } from "@/context/OrderContext";
 import { AppNav } from "@/types/types";
@@ -9,15 +10,22 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { usePaystack } from "react-native-paystack-webview";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type CheckoutNavigationProp = NativeStackNavigationProp<AppNav, "Checkout">;
 
+// pk_test_... keys never move real money; pk_live_... keys do.
+const PAYSTACK_PUBLIC_KEY = process.env.EXPO_PUBLIC_PAYSTACK_PUBLIC_KEY ?? "";
+const isTestMode = PAYSTACK_PUBLIC_KEY.startsWith("pk_test_");
+
 export default function Checkout() {
   const navigation = useNavigation<CheckoutNavigationProp>();
   const { cartItems, clearCart } = useCart();
   const { createOrder } = useOrders();
+  const { user } = useAuth();
+  const { popup } = usePaystack();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const subtotal = cartItems.reduce(
@@ -28,31 +36,72 @@ export default function Checkout() {
   const deliveryFee = 1000;
   const total = subtotal + deliveryFee;
 
-  const handlePayment = async () => {
+  const handlePayment = () => {
     if (cartItems.length === 0 || isProcessing) {
       return;
     }
 
-    setIsProcessing(true);
-    try {
-      await createOrder({
-        items: cartItems,
-        subtotal,
-        deliveryFee,
-        total,
-        status: "Pending",
-      });
-      clearCart();
-      navigation.replace("OrderSuccess");
-    } catch (error) {
-      console.error("Failed to place order:", error);
+    if (!user?.email) {
       Alert.alert(
-        "Order failed",
-        "We couldn't place your order. Please check your internet connection and try again.",
+        "Sign in required",
+        "We need your account email to process payment. Please sign in again.",
       );
-    } finally {
-      setIsProcessing(false);
+      return;
     }
+
+    if (!PAYSTACK_PUBLIC_KEY) {
+      Alert.alert(
+        "Payment not configured",
+        "Paystack public key is missing. Add EXPO_PUBLIC_PAYSTACK_PUBLIC_KEY to your .env file.",
+      );
+      return;
+    }
+
+    setIsProcessing(true);
+
+    const reference = `parfiora_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+
+    popup.checkout({
+      email: user.email,
+      amount: total,
+      reference,
+      onLoad: (res) => {
+        console.log("PAYSTACK WEBVIEW LOADED:", res);
+      },
+      onSuccess: async (res) => {
+        try {
+          await createOrder({
+            items: cartItems,
+            subtotal,
+            deliveryFee,
+            total,
+            status: "Pending",
+            paymentReference: res?.reference ?? reference,
+          });
+          clearCart();
+          navigation.replace("OrderSuccess");
+        } catch (error) {
+          console.error("Payment succeeded but order creation failed:", error);
+          Alert.alert(
+            "Payment received, order not saved",
+            `Your payment went through (ref: ${res?.reference ?? reference}) but we couldn't save your order. Please contact support with this reference.`,
+          );
+        } finally {
+          setIsProcessing(false);
+        }
+      },
+      onCancel: () => {
+        setIsProcessing(false);
+      },
+      onError: (error) => {
+        console.error("Paystack error:", error);
+        setIsProcessing(false);
+        Alert.alert(
+          "Payment failed",
+          "Something went wrong while processing your payment. Please check your connection and try again.",
+        );
+      },
+    });
   };
 
   return (
@@ -67,6 +116,19 @@ export default function Checkout() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
       >
+        {isTestMode && (
+          <View style={styles.testBadge}>
+            <Ionicons
+              name="information-circle-outline"
+              size={16}
+              color="#8a6d00"
+            />
+            <Text style={styles.testBadgeText}>
+              Test mode — no real charge will be made
+            </Text>
+          </View>
+        )}
+
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Delivery Address</Text>
@@ -198,6 +260,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp("5%"),
     paddingBottom: wp("30%"),
     gap: wp("7%"),
+  },
+  testBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: wp("2%"),
+    backgroundColor: "#fff3cd",
+    borderRadius: wp("2.5%"),
+    paddingVertical: wp("2.5%"),
+    paddingHorizontal: wp("3%"),
+  },
+  testBadgeText: {
+    fontFamily: "Manrope-SemiBold",
+    fontSize: 12,
+    color: "#8a6d00",
+    flex: 1,
   },
   section: {
     gap: wp("3%"),
