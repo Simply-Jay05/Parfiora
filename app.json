@@ -38,7 +38,13 @@
         }
       ],
       "expo-font",
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Parfiora uses your location to show shops nearest to you."
+        }
+      ]
     ],
     "experiments": {
       "reactCompiler": true

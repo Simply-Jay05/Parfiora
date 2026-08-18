@@ -1,6 +1,7 @@
 import BackButton from "@/components/ui/BackButton";
 import Button from "@/components/ui/Button";
 import { useCart } from "@/context/CartContext";
+import { useFavorites } from "@/context/FavoritesContext";
 import { getProductById } from "@/services/productService";
 import { Product } from "@/types/product";
 import { AppNav } from "@/types/types";
@@ -59,6 +60,7 @@ export default function ProductDetails() {
 
   const { id } = route.params;
   const { addToCart } = useCart();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -68,7 +70,6 @@ export default function ProductDetails() {
   const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [specialInstructions, setSpecialInstructions] = useState("");
-  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -168,10 +169,10 @@ export default function ProductDetails() {
         <BackButton />
         <TouchableOpacity
           style={styles.favoriteBtn}
-          onPress={() => setIsFavorite((current) => !current)}
+          onPress={() => toggleFavorite(product.id)}
         >
           <Ionicons
-            name={isFavorite ? "heart" : "heart-outline"}
+            name={isFavorite(product.id) ? "heart" : "heart-outline"}
             size={24}
             color={COLORS.secondaryColor}
           />

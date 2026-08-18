@@ -1,5 +1,6 @@
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
+import { FavoritesProvider } from "@/context/FavoritesContext";
 import { OrderProvider } from "@/context/OrderContext";
 import RootNavigator from "@/navigation/RootNavigator";
 import { useFonts } from "expo-font";
@@ -28,22 +29,25 @@ export default function App() {
     return null;
   }
   return (
-    <AuthProvider>
-      <CartProvider>
-        <OrderProvider>
-          <PaystackProvider
-            publicKey={process.env.EXPO_PUBLIC_PAYSTACK_PUBLIC_KEY ?? ""}
-            debug={true}
-          >
-            <StatusBar
-              barStyle="dark-content"
-              backgroundColor="transparent"
-              translucent
-            ></StatusBar>
-            <RootNavigator />
-          </PaystackProvider>
-        </OrderProvider>
-      </CartProvider>
-    </AuthProvider>
+    <PaystackProvider
+      publicKey={process.env.EXPO_PUBLIC_PAYSTACK_PUBLIC_KEY ?? ""}
+      currency="NGN"
+      debug={true}
+    >
+      <AuthProvider>
+        <FavoritesProvider>
+          <CartProvider>
+            <OrderProvider>
+              <StatusBar
+                barStyle="dark-content"
+                backgroundColor="transparent"
+                translucent
+              ></StatusBar>
+              <RootNavigator />
+            </OrderProvider>
+          </CartProvider>
+        </FavoritesProvider>
+      </AuthProvider>
+    </PaystackProvider>
   );
 }
