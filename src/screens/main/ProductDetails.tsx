@@ -122,7 +122,7 @@ export default function ProductDetails() {
   }
 
   const selectedSizeData = sizes.find((size) => size.name === selectedSize);
-  const basePrice = selectedSizeData?.price ?? product.price;
+  const basePrice = product.price;
   const extrasTotal = selectedExtras.reduce((total, extraName) => {
     const extra = extras.find((item) => item.name === extraName);
     return total + (extra?.price ?? 0);
@@ -245,14 +245,14 @@ export default function ProductDetails() {
                     {size.name}
                   </Text>
 
-                  <Text
+                  {/* <Text
                     style={[
                       styles.sizePrice,
                       isSelected && styles.selectedOptionText,
                     ]}
                   >
                     ₦{size.price.toLocaleString()}
-                  </Text>
+                  </Text> */}
                 </TouchableOpacity>
               );
             })}

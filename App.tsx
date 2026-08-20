@@ -1,6 +1,8 @@
+import OfflineScreen from "@/components/ui/OfflineScreen";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { FavoritesProvider } from "@/context/FavoritesContext";
+import { NetworkProvider, useNetwork } from "@/context/NetworkContext";
 import { OrderProvider } from "@/context/OrderContext";
 import RootNavigator from "@/navigation/RootNavigator";
 import { useFonts } from "expo-font";
@@ -28,26 +30,41 @@ export default function App() {
   if (!loaded && !error) {
     return null;
   }
+
+  function AppContent() {
+    const { isConnected } = useNetwork();
+
+    if (isConnected === false) {
+      return <OfflineScreen />;
+    }
+
+    return (
+      <>
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="transparent"
+          translucent
+        />
+        <RootNavigator />
+      </>
+    );
+  }
+
   return (
-    <PaystackProvider
-      publicKey={process.env.EXPO_PUBLIC_PAYSTACK_PUBLIC_KEY ?? ""}
-      currency="NGN"
-      debug={true}
-    >
+    <NetworkProvider>
       <AuthProvider>
-        <FavoritesProvider>
-          <CartProvider>
-            <OrderProvider>
-              <StatusBar
-                barStyle="dark-content"
-                backgroundColor="transparent"
-                translucent
-              ></StatusBar>
-              <RootNavigator />
-            </OrderProvider>
-          </CartProvider>
-        </FavoritesProvider>
+        <CartProvider>
+          <OrderProvider>
+            <FavoritesProvider>
+              <PaystackProvider
+                publicKey={process.env.EXPO_PUBLIC_PAYSTACK_PUBLIC_KEY ?? ""}
+              >
+                <AppContent />
+              </PaystackProvider>
+            </FavoritesProvider>
+          </OrderProvider>
+        </CartProvider>
       </AuthProvider>
-    </PaystackProvider>
+    </NetworkProvider>
   );
 }
